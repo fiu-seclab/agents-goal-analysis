@@ -1,0 +1,1419 @@
+{
+  "version": "1",
+  "site": "servicenow",
+  "objectives": [
+    "discovery",
+    "retrieval",
+    "enumeration",
+    "curation",
+    "transaction",
+    "identity",
+    "service"
+  ],
+  "agents": [
+    "browser-use",
+    "skyvern",
+    "human"
+  ],
+  "tasks": {
+    "SN01": {
+      "label": "Find incident by description",
+      "objective": "discovery",
+      "ask": "Find the incident whose short description mentions a badge reader (code {{nonce}}). Report its incident number.",
+      "start_path": "/incident_list.do",
+      "setup": [
+        {
+          "alias": "inc1",
+          "table": "incident",
+          "fields": {
+            "short_description": "Printer jam on floor 3 {{nonce}}"
+          }
+        },
+        {
+          "alias": "inc2",
+          "table": "incident",
+          "fields": {
+            "short_description": "Badge reader offline at lobby {{nonce}}"
+          }
+        },
+        {
+          "alias": "inc3",
+          "table": "incident",
+          "fields": {
+            "short_description": "Projector flicker in room 12 {{nonce}}"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "number",
+        "expected": "{{inc2.number}}"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "report_fields": {
+        "number": "INC… or null"
+      },
+      "hint": "Use the Incident list and its search or filter. Do not use the REST API."
+    },
+    "SN02": {
+      "label": "Find problem by description",
+      "objective": "discovery",
+      "ask": "Find the problem record whose short description mentions a database replication lag (code {{nonce}}). Report its problem number.",
+      "start_path": "/problem_list.do",
+      "setup": [
+        {
+          "alias": "p1",
+          "table": "problem",
+          "fields": {
+            "short_description": "Slow login page {{nonce}}"
+          }
+        },
+        {
+          "alias": "p2",
+          "table": "problem",
+          "fields": {
+            "short_description": "Database replication lag overnight {{nonce}}"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "number",
+        "expected": "{{p2.number}}"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "report_fields": {
+        "number": "PRB… or null"
+      }
+    },
+    "SN03": {
+      "label": "Find change request by description",
+      "objective": "discovery",
+      "ask": "Find the change request whose short description mentions a firewall rule update (code {{nonce}}). Report its change number.",
+      "start_path": "/change_request_list.do",
+      "setup": [
+        {
+          "alias": "c1",
+          "table": "change_request",
+          "fields": {
+            "short_description": "Patch kiosk image {{nonce}}"
+          }
+        },
+        {
+          "alias": "c2",
+          "table": "change_request",
+          "fields": {
+            "short_description": "Firewall rule update for guest wifi {{nonce}}"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "number",
+        "expected": "{{c2.number}}"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "report_fields": {
+        "number": "CHG… or null"
+      }
+    },
+    "SN04": {
+      "label": "Find user by job title",
+      "objective": "discovery",
+      "ask": "Find the user whose job title is 'Facilities Coordinator {{nonce}}'. Report that user's User ID.",
+      "start_path": "/sys_user_list.do",
+      "setup": [
+        {
+          "alias": "u1",
+          "table": "sys_user",
+          "fields": {
+            "user_name": "wa.{{nonce}}.a",
+            "first_name": "Ari",
+            "last_name": "Lund{{nonce}}",
+            "title": "Planner {{nonce}}"
+          }
+        },
+        {
+          "alias": "u2",
+          "table": "sys_user",
+          "fields": {
+            "user_name": "wa.{{nonce}}.b",
+            "first_name": "Bea",
+            "last_name": "Ortiz{{nonce}}",
+            "title": "Facilities Coordinator {{nonce}}"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "user_name",
+        "expected": "{{u2.user_name}}"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "report_fields": {
+        "user_name": "user id or null"
+      }
+    },
+    "SN05": {
+      "label": "Find most urgent incident in a set",
+      "objective": "discovery",
+      "ask": "Among the incidents whose short description contains 'Queue {{nonce}}', find the one with the highest urgency (1 - High). Report its incident number.",
+      "start_path": "/incident_list.do",
+      "setup": [
+        {
+          "alias": "q1",
+          "table": "incident",
+          "fields": {
+            "short_description": "Queue {{nonce}} alpha",
+            "urgency": "1"
+          }
+        },
+        {
+          "alias": "q2",
+          "table": "incident",
+          "fields": {
+            "short_description": "Queue {{nonce}} beta",
+            "urgency": "2"
+          }
+        },
+        {
+          "alias": "q3",
+          "table": "incident",
+          "fields": {
+            "short_description": "Queue {{nonce}} gamma",
+            "urgency": "3"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "number",
+        "expected": "{{q1.number}}"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "report_fields": {
+        "number": "INC… or null"
+      }
+    },
+    "SN06": {
+      "label": "Read an incident field",
+      "objective": "retrieval",
+      "ask": "Open incident {{inc1.number}} and report its urgency.",
+      "start_path": "/incident.do?sysparm_query=number={{inc1.number}}",
+      "setup": [
+        {
+          "alias": "inc1",
+          "table": "incident",
+          "fields": {
+            "short_description": "Network drop in annex {{nonce}}",
+            "urgency": "2",
+            "category": "network"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "urgency",
+        "expected": "{{inc1.urgency}}"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "report_fields": {
+        "urgency": "value shown on the form"
+      }
+    },
+    "SN07": {
+      "label": "Read a user email",
+      "objective": "retrieval",
+      "ask": "Open the user record with User ID {{u1.user_name}} and report the email address.",
+      "start_path": "/sys_user.do?sysparm_query=user_name={{u1.user_name}}",
+      "setup": [
+        {
+          "alias": "u1",
+          "table": "sys_user",
+          "fields": {
+            "user_name": "wa.{{nonce}}.r",
+            "first_name": "Rui",
+            "last_name": "Park{{nonce}}",
+            "email": "rui.park.{{nonce}}@hearthline.test"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "email",
+        "expected": "{{u1.email}}"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "report_fields": {
+        "email": "address or null"
+      }
+    },
+    "SN08": {
+      "label": "Read a value from a description",
+      "objective": "retrieval",
+      "ask": "Open incident {{inc1.number}} and report the access code written in its description.",
+      "start_path": "/incident.do?sysparm_query=number={{inc1.number}}",
+      "setup": [
+        {
+          "alias": "inc1",
+          "table": "incident",
+          "fields": {
+            "short_description": "Locker access issue {{nonce}}",
+            "description": "Employee cannot open locker. Access code: ZX{{nonce}}-77"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "code",
+        "expected": "ZX{{nonce}}-77"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "report_fields": {
+        "code": "the code or null"
+      }
+    },
+    "SN09": {
+      "label": "Read a change request type",
+      "objective": "retrieval",
+      "ask": "Open change request {{c1.number}} and report its type.",
+      "start_path": "/change_request.do?sysparm_query=number={{c1.number}}",
+      "setup": [
+        {
+          "alias": "c1",
+          "table": "change_request",
+          "fields": {
+            "short_description": "Rotate certificates {{nonce}}",
+            "type": "emergency"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "type",
+        "expected": "{{c1.type}}"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "report_fields": {
+        "type": "Normal, Standard or Emergency"
+      }
+    },
+    "SN10": {
+      "label": "Read a user phone number",
+      "objective": "retrieval",
+      "ask": "Open the user record with User ID {{u1.user_name}} and report the mobile phone number.",
+      "start_path": "/sys_user.do?sysparm_query=user_name={{u1.user_name}}",
+      "setup": [
+        {
+          "alias": "u1",
+          "table": "sys_user",
+          "fields": {
+            "user_name": "wa.{{nonce}}.p",
+            "first_name": "Pia",
+            "last_name": "Nolan{{nonce}}",
+            "mobile_phone": "503-555-0199"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "phone",
+        "expected": "503-555-0199",
+        "digits": true
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "report_fields": {
+        "phone": "number or null"
+      }
+    },
+    "SN11": {
+      "label": "Count records in a list",
+      "objective": "enumeration",
+      "ask": "How many incidents have 'Batch {{nonce}}' in their short description? Report the count.",
+      "start_path": "/incident_list.do",
+      "setup": [
+        {
+          "alias": "b1",
+          "table": "incident",
+          "fields": {
+            "short_description": "Batch {{nonce}} item 1",
+            "urgency": "1"
+          }
+        },
+        {
+          "alias": "b2",
+          "table": "incident",
+          "fields": {
+            "short_description": "Batch {{nonce}} item 2",
+            "urgency": "1"
+          }
+        },
+        {
+          "alias": "b3",
+          "table": "incident",
+          "fields": {
+            "short_description": "Batch {{nonce}} item 3",
+            "urgency": "2"
+          }
+        },
+        {
+          "alias": "b4",
+          "table": "incident",
+          "fields": {
+            "short_description": "Batch {{nonce}} item 4",
+            "urgency": "2"
+          }
+        },
+        {
+          "alias": "b5",
+          "table": "incident",
+          "fields": {
+            "short_description": "Batch {{nonce}} item 5",
+            "urgency": "2"
+          }
+        },
+        {
+          "alias": "b6",
+          "table": "incident",
+          "fields": {
+            "short_description": "Batch {{nonce}} item 6",
+            "urgency": "3"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "count",
+        "expected_count": {
+          "table": "incident",
+          "where": [
+            [
+              "short_description",
+              "LIKE",
+              "Batch {{nonce}}"
+            ]
+          ]
+        }
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "report_fields": {
+        "count": 0
+      }
+    },
+    "SN12": {
+      "label": "Count with a filter",
+      "objective": "enumeration",
+      "ask": "Among the incidents with 'Batch {{nonce}}' in their short description, how many have urgency 1 - High? Report the count.",
+      "start_path": "/incident_list.do",
+      "setup": [
+        {
+          "alias": "b1",
+          "table": "incident",
+          "fields": {
+            "short_description": "Batch {{nonce}} item 1",
+            "urgency": "1"
+          }
+        },
+        {
+          "alias": "b2",
+          "table": "incident",
+          "fields": {
+            "short_description": "Batch {{nonce}} item 2",
+            "urgency": "1"
+          }
+        },
+        {
+          "alias": "b3",
+          "table": "incident",
+          "fields": {
+            "short_description": "Batch {{nonce}} item 3",
+            "urgency": "2"
+          }
+        },
+        {
+          "alias": "b4",
+          "table": "incident",
+          "fields": {
+            "short_description": "Batch {{nonce}} item 4",
+            "urgency": "2"
+          }
+        },
+        {
+          "alias": "b5",
+          "table": "incident",
+          "fields": {
+            "short_description": "Batch {{nonce}} item 5",
+            "urgency": "2"
+          }
+        },
+        {
+          "alias": "b6",
+          "table": "incident",
+          "fields": {
+            "short_description": "Batch {{nonce}} item 6",
+            "urgency": "3"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "count",
+        "expected_count": {
+          "table": "incident",
+          "where": [
+            [
+              "short_description",
+              "LIKE",
+              "Batch {{nonce}}"
+            ],
+            [
+              "urgency",
+              "=",
+              "1"
+            ]
+          ]
+        }
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "report_fields": {
+        "count": 0
+      }
+    },
+    "SN13": {
+      "label": "Count problems",
+      "objective": "enumeration",
+      "ask": "How many problem records have 'Sweep {{nonce}}' in their short description? Report the count.",
+      "start_path": "/problem_list.do",
+      "setup": [
+        {
+          "alias": "p1",
+          "table": "problem",
+          "fields": {
+            "short_description": "Sweep {{nonce}} #1"
+          }
+        },
+        {
+          "alias": "p2",
+          "table": "problem",
+          "fields": {
+            "short_description": "Sweep {{nonce}} #2"
+          }
+        },
+        {
+          "alias": "p3",
+          "table": "problem",
+          "fields": {
+            "short_description": "Sweep {{nonce}} #3"
+          }
+        },
+        {
+          "alias": "p4",
+          "table": "problem",
+          "fields": {
+            "short_description": "Sweep {{nonce}} #4"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "count",
+        "expected_count": {
+          "table": "problem",
+          "where": [
+            [
+              "short_description",
+              "LIKE",
+              "Sweep {{nonce}}"
+            ]
+          ]
+        }
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "report_fields": {
+        "count": 0
+      }
+    },
+    "SN14": {
+      "label": "Sort a list and read the top row",
+      "objective": "enumeration",
+      "ask": "List the incidents with 'Order {{nonce}}' in their short description, sort them by short description from Z to A, and report the incident number in the first row.",
+      "start_path": "/incident_list.do",
+      "setup": [
+        {
+          "alias": "o1",
+          "table": "incident",
+          "fields": {
+            "short_description": "Order {{nonce}} A"
+          }
+        },
+        {
+          "alias": "o2",
+          "table": "incident",
+          "fields": {
+            "short_description": "Order {{nonce}} B"
+          }
+        },
+        {
+          "alias": "o3",
+          "table": "incident",
+          "fields": {
+            "short_description": "Order {{nonce}} C"
+          }
+        },
+        {
+          "alias": "o4",
+          "table": "incident",
+          "fields": {
+            "short_description": "Order {{nonce}} D"
+          }
+        },
+        {
+          "alias": "o5",
+          "table": "incident",
+          "fields": {
+            "short_description": "Order {{nonce}} E"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "number",
+        "expected": "{{o5.number}}"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "report_fields": {
+        "number": "INC… or null"
+      }
+    },
+    "SN15": {
+      "label": "Count users with a title",
+      "objective": "enumeration",
+      "ask": "How many users have the job title 'Intern {{nonce}}'? Report the count.",
+      "start_path": "/sys_user_list.do",
+      "setup": [
+        {
+          "alias": "i1",
+          "table": "sys_user",
+          "fields": {
+            "user_name": "wa.{{nonce}}.i1",
+            "first_name": "Intern1",
+            "last_name": "Row{{nonce}}",
+            "title": "Intern {{nonce}}"
+          }
+        },
+        {
+          "alias": "i2",
+          "table": "sys_user",
+          "fields": {
+            "user_name": "wa.{{nonce}}.i2",
+            "first_name": "Intern2",
+            "last_name": "Row{{nonce}}",
+            "title": "Intern {{nonce}}"
+          }
+        },
+        {
+          "alias": "i3",
+          "table": "sys_user",
+          "fields": {
+            "user_name": "wa.{{nonce}}.i3",
+            "first_name": "Intern3",
+            "last_name": "Row{{nonce}}",
+            "title": "Intern {{nonce}}"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "count",
+        "expected_count": {
+          "table": "sys_user",
+          "where": [
+            [
+              "title",
+              "=",
+              "Intern {{nonce}}"
+            ]
+          ]
+        }
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "report_fields": {
+        "count": 0
+      }
+    },
+    "SN16": {
+      "label": "Change incident urgency",
+      "objective": "curation",
+      "ask": "Open incident {{inc1.number}} and set its urgency to 1 - High. Save it.",
+      "start_path": "/incident.do?sysparm_query=number={{inc1.number}}",
+      "setup": [
+        {
+          "alias": "inc1",
+          "table": "incident",
+          "fields": {
+            "short_description": "Slow VPN {{nonce}}",
+            "urgency": "3"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "field_equals",
+        "alias": "inc1",
+        "table": "incident",
+        "fields": {
+          "urgency": "1"
+        }
+      },
+      "verification": {
+        "type": "state"
+      }
+    },
+    "SN17": {
+      "label": "Change incident category",
+      "objective": "curation",
+      "ask": "Open incident {{inc1.number}} and change its category to Hardware. Save it.",
+      "start_path": "/incident.do?sysparm_query=number={{inc1.number}}",
+      "setup": [
+        {
+          "alias": "inc1",
+          "table": "incident",
+          "fields": {
+            "short_description": "Dock not charging {{nonce}}",
+            "category": "software"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "field_equals",
+        "alias": "inc1",
+        "table": "incident",
+        "fields": {
+          "category": "hardware"
+        }
+      },
+      "verification": {
+        "type": "state"
+      }
+    },
+    "SN18": {
+      "label": "Change problem impact",
+      "objective": "curation",
+      "ask": "Open problem {{p1.number}} and set its impact to 1 - High. Save it.",
+      "start_path": "/problem.do?sysparm_query=number={{p1.number}}",
+      "setup": [
+        {
+          "alias": "p1",
+          "table": "problem",
+          "fields": {
+            "short_description": "Repeated timeouts {{nonce}}",
+            "impact": "3"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "field_equals",
+        "alias": "p1",
+        "table": "problem",
+        "fields": {
+          "impact": "1"
+        }
+      },
+      "verification": {
+        "type": "state"
+      }
+    },
+    "SN19": {
+      "label": "Rename a change request",
+      "objective": "curation",
+      "ask": "Open change request {{c1.number}} and change its short description to 'Renewed certificates {{nonce}}'. Save it.",
+      "start_path": "/change_request.do?sysparm_query=number={{c1.number}}",
+      "setup": [
+        {
+          "alias": "c1",
+          "table": "change_request",
+          "fields": {
+            "short_description": "Renew certificates {{nonce}}"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "field_equals",
+        "alias": "c1",
+        "table": "change_request",
+        "fields": {
+          "short_description": "Renewed certificates {{nonce}}"
+        }
+      },
+      "verification": {
+        "type": "state"
+      }
+    },
+    "SN20": {
+      "label": "Move incident to In Progress",
+      "objective": "curation",
+      "ask": "Open incident {{inc1.number}} and set its state to In Progress. Save it.",
+      "start_path": "/incident.do?sysparm_query=number={{inc1.number}}",
+      "setup": [
+        {
+          "alias": "inc1",
+          "table": "incident",
+          "fields": {
+            "short_description": "Keyboard replacement {{nonce}}",
+            "state": "1"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "field_equals",
+        "alias": "inc1",
+        "table": "incident",
+        "fields": {
+          "state": "2"
+        }
+      },
+      "verification": {
+        "type": "state"
+      }
+    },
+    "SN21": {
+      "label": "Order Standard Laptop",
+      "objective": "transaction",
+      "ask": "Order one Standard Laptop from the Service Catalog with the default options and submit the order.",
+      "start_path": "/com.glideapp.servicecatalog_home.do",
+      "setup": [],
+      "constraints": {
+        "kind": "created",
+        "table": "sc_req_item",
+        "where": [
+          [
+            "cat_item.name",
+            "LIKE",
+            "Standard Laptop"
+          ]
+        ],
+        "count": 1
+      },
+      "verification": {
+        "type": "state"
+      },
+      "report_fields": {
+        "request_number": "REQ… or null"
+      },
+      "hint": "Use Service Catalog > Hardware. Finish with Order Now. Do not call the REST API."
+    },
+    "SN22": {
+      "label": "Order Sales Laptop",
+      "objective": "transaction",
+      "ask": "Order one Sales Laptop from the Service Catalog with the default options and submit the order.",
+      "start_path": "/com.glideapp.servicecatalog_home.do",
+      "setup": [],
+      "constraints": {
+        "kind": "created",
+        "table": "sc_req_item",
+        "where": [
+          [
+            "cat_item.name",
+            "LIKE",
+            "Sales Laptop"
+          ]
+        ],
+        "count": 1
+      },
+      "verification": {
+        "type": "state"
+      },
+      "report_fields": {
+        "request_number": "REQ… or null"
+      },
+      "hint": "Use Service Catalog > Hardware. Finish with Order Now. Do not call the REST API."
+    },
+    "SN23": {
+      "label": "Order iPad mini",
+      "objective": "transaction",
+      "ask": "Order one iPad mini from the Service Catalog with the default options and submit the order.",
+      "start_path": "/com.glideapp.servicecatalog_home.do",
+      "setup": [],
+      "constraints": {
+        "kind": "created",
+        "table": "sc_req_item",
+        "where": [
+          [
+            "cat_item.name",
+            "LIKE",
+            "iPad mini"
+          ]
+        ],
+        "count": 1
+      },
+      "verification": {
+        "type": "state"
+      },
+      "report_fields": {
+        "request_number": "REQ… or null"
+      },
+      "hint": "Use Service Catalog > Hardware. Finish with Order Now. Do not call the REST API."
+    },
+    "SN24": {
+      "label": "Order iPad pro",
+      "objective": "transaction",
+      "ask": "Order one iPad pro from the Service Catalog with the default options and submit the order.",
+      "start_path": "/com.glideapp.servicecatalog_home.do",
+      "setup": [],
+      "constraints": {
+        "kind": "created",
+        "table": "sc_req_item",
+        "where": [
+          [
+            "cat_item.name",
+            "LIKE",
+            "iPad pro"
+          ]
+        ],
+        "count": 1
+      },
+      "verification": {
+        "type": "state"
+      },
+      "report_fields": {
+        "request_number": "REQ… or null"
+      },
+      "hint": "Use Service Catalog > Hardware. Finish with Order Now. Do not call the REST API."
+    },
+    "SN25": {
+      "label": "Order Apple Watch",
+      "objective": "transaction",
+      "ask": "Order one Apple Watch from the Service Catalog with the default options and submit the order.",
+      "start_path": "/com.glideapp.servicecatalog_home.do",
+      "setup": [],
+      "constraints": {
+        "kind": "created",
+        "table": "sc_req_item",
+        "where": [
+          [
+            "cat_item.name",
+            "LIKE",
+            "Apple Watch"
+          ]
+        ],
+        "count": 1
+      },
+      "verification": {
+        "type": "state"
+      },
+      "report_fields": {
+        "request_number": "REQ… or null"
+      },
+      "hint": "Use Service Catalog > Hardware. Finish with Order Now. Do not call the REST API."
+    },
+    "SN26": {
+      "label": "Create a user",
+      "objective": "identity",
+      "ask": "Create a new user with User ID wa.{{nonce}}.new, first name Maya, last name Chen{{nonce}}, and email maya.chen.{{nonce}}@hearthline.test. Save it.",
+      "start_path": "/sys_user.do?sys_id=-1",
+      "setup": [],
+      "constraints": {
+        "kind": "created",
+        "table": "sys_user",
+        "where": [
+          [
+            "user_name",
+            "=",
+            "wa.{{nonce}}.new"
+          ],
+          [
+            "first_name",
+            "=",
+            "Maya"
+          ],
+          [
+            "email",
+            "=",
+            "maya.chen.{{nonce}}@hearthline.test"
+          ]
+        ]
+      },
+      "verification": {
+        "type": "state"
+      },
+      "report_fields": {
+        "user_name": "user id or null"
+      }
+    },
+    "SN27": {
+      "label": "Create a user with contact fields",
+      "objective": "identity",
+      "ask": "Create a new user with User ID wa.{{nonce}}.c, first name Dev, last name Rao{{nonce}}, job title Analyst, and mobile phone 503-555-0142. Save it.",
+      "start_path": "/sys_user.do?sys_id=-1",
+      "setup": [],
+      "constraints": {
+        "kind": "created",
+        "table": "sys_user",
+        "where": [
+          [
+            "user_name",
+            "=",
+            "wa.{{nonce}}.c"
+          ],
+          [
+            "title",
+            "=",
+            "Analyst"
+          ],
+          [
+            "mobile_phone",
+            "=",
+            "503-555-0142"
+          ]
+        ]
+      },
+      "verification": {
+        "type": "state"
+      },
+      "report_fields": {
+        "user_name": "user id or null"
+      }
+    },
+    "SN28": {
+      "label": "Change a user's email",
+      "objective": "identity",
+      "ask": "Open the user with User ID {{u1.user_name}} and change the email to renamed.{{nonce}}@hearthline.test. Save it.",
+      "start_path": "/sys_user.do?sysparm_query=user_name={{u1.user_name}}",
+      "setup": [
+        {
+          "alias": "u1",
+          "table": "sys_user",
+          "fields": {
+            "user_name": "wa.{{nonce}}.e",
+            "first_name": "Eli",
+            "last_name": "Voss{{nonce}}",
+            "email": "eli.{{nonce}}@hearthline.test"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "field_equals",
+        "alias": "u1",
+        "table": "sys_user",
+        "fields": {
+          "email": "renamed.{{nonce}}@hearthline.test"
+        }
+      },
+      "verification": {
+        "type": "state"
+      }
+    },
+    "SN29": {
+      "label": "Change a user's phone",
+      "objective": "identity",
+      "ask": "Open the user with User ID {{u1.user_name}} and change the mobile phone to 503-555-0177. Save it.",
+      "start_path": "/sys_user.do?sysparm_query=user_name={{u1.user_name}}",
+      "setup": [
+        {
+          "alias": "u1",
+          "table": "sys_user",
+          "fields": {
+            "user_name": "wa.{{nonce}}.m",
+            "first_name": "Mo",
+            "last_name": "Lee{{nonce}}",
+            "mobile_phone": "503-555-0100"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "field_equals",
+        "alias": "u1",
+        "table": "sys_user",
+        "fields": {
+          "mobile_phone": "503-555-0177"
+        }
+      },
+      "verification": {
+        "type": "state"
+      }
+    },
+    "SN30": {
+      "label": "Deactivate a user",
+      "objective": "identity",
+      "ask": "Open the user with User ID {{u1.user_name}} and make the account inactive (clear the Active checkbox). Save it.",
+      "start_path": "/sys_user.do?sysparm_query=user_name={{u1.user_name}}",
+      "setup": [
+        {
+          "alias": "u1",
+          "table": "sys_user",
+          "fields": {
+            "user_name": "wa.{{nonce}}.d",
+            "first_name": "Dee",
+            "last_name": "Kim{{nonce}}",
+            "active": "true"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "field_equals",
+        "alias": "u1",
+        "table": "sys_user",
+        "fields": {
+          "active": "false"
+        }
+      },
+      "verification": {
+        "type": "state"
+      }
+    },
+    "SN31": {
+      "label": "Raise an incident",
+      "objective": "service",
+      "ask": "Create an incident with short description 'Conference phone dead {{nonce}}', description 'No dial tone in room 4', urgency 2 - Medium and category Network. If Caller is required, use the user you are logged in as. Submit it.",
+      "start_path": "/incident.do?sys_id=-1",
+      "setup": [],
+      "constraints": {
+        "kind": "created",
+        "table": "incident",
+        "where": [
+          [
+            "short_description",
+            "=",
+            "Conference phone dead {{nonce}}"
+          ],
+          [
+            "urgency",
+            "=",
+            "2"
+          ],
+          [
+            "category",
+            "=",
+            "network"
+          ]
+        ]
+      },
+      "verification": {
+        "type": "state"
+      },
+      "report_fields": {
+        "number": "INC… or null"
+      }
+    },
+    "SN32": {
+      "label": "Raise a high-urgency incident",
+      "objective": "service",
+      "ask": "Create an incident with short description 'Payroll export failing {{nonce}}', urgency 1 - High and category Software. If Caller is required, use the user you are logged in as. Submit it.",
+      "start_path": "/incident.do?sys_id=-1",
+      "setup": [],
+      "constraints": {
+        "kind": "created",
+        "table": "incident",
+        "where": [
+          [
+            "short_description",
+            "=",
+            "Payroll export failing {{nonce}}"
+          ],
+          [
+            "urgency",
+            "=",
+            "1"
+          ],
+          [
+            "category",
+            "=",
+            "software"
+          ]
+        ]
+      },
+      "verification": {
+        "type": "state"
+      },
+      "report_fields": {
+        "number": "INC… or null"
+      }
+    },
+    "SN33": {
+      "label": "Raise a hardware incident",
+      "objective": "service",
+      "ask": "Create an incident with short description 'Monitor flickers {{nonce}}', urgency 3 - Low and category Hardware. If Caller is required, use the user you are logged in as. Submit it.",
+      "start_path": "/incident.do?sys_id=-1",
+      "setup": [],
+      "constraints": {
+        "kind": "created",
+        "table": "incident",
+        "where": [
+          [
+            "short_description",
+            "=",
+            "Monitor flickers {{nonce}}"
+          ],
+          [
+            "urgency",
+            "=",
+            "3"
+          ],
+          [
+            "category",
+            "=",
+            "hardware"
+          ]
+        ]
+      },
+      "verification": {
+        "type": "state"
+      },
+      "report_fields": {
+        "number": "INC… or null"
+      }
+    },
+    "SN34": {
+      "label": "Open a problem",
+      "objective": "service",
+      "ask": "Create a problem with short description 'Recurring login timeouts {{nonce}}' and description 'Reported by several users this week'. Submit it.",
+      "start_path": "/problem.do?sys_id=-1",
+      "setup": [],
+      "constraints": {
+        "kind": "created",
+        "table": "problem",
+        "where": [
+          [
+            "short_description",
+            "=",
+            "Recurring login timeouts {{nonce}}"
+          ]
+        ]
+      },
+      "verification": {
+        "type": "state"
+      },
+      "report_fields": {
+        "number": "PRB… or null"
+      }
+    },
+    "SN35": {
+      "label": "Open a change request",
+      "objective": "service",
+      "ask": "Create a normal change request with short description 'Upgrade wiki server {{nonce}}' and description 'Planned maintenance'. Submit it.",
+      "start_path": "/change_request.do?sys_id=-1",
+      "setup": [],
+      "constraints": {
+        "kind": "created",
+        "table": "change_request",
+        "where": [
+          [
+            "short_description",
+            "=",
+            "Upgrade wiki server {{nonce}}"
+          ],
+          [
+            "type",
+            "=",
+            "normal"
+          ]
+        ]
+      },
+      "verification": {
+        "type": "state"
+      },
+      "report_fields": {
+        "number": "CHG… or null"
+      }
+    },
+    "SN36": {
+      "label": "Find then edit an incident",
+      "objective": "discovery",
+      "ask": "Find the incident whose short description mentions a badge reader (code {{nonce}}), then set its urgency to 1 - High and save it.",
+      "start_path": "/incident_list.do",
+      "setup": [
+        {
+          "alias": "inc1",
+          "table": "incident",
+          "fields": {
+            "short_description": "Printer jam on floor 3 {{nonce}}",
+            "urgency": "3"
+          }
+        },
+        {
+          "alias": "inc2",
+          "table": "incident",
+          "fields": {
+            "short_description": "Badge reader offline at lobby {{nonce}}",
+            "urgency": "3"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "composite",
+        "parts": [
+          {
+            "kind": "field_equals",
+            "alias": "inc2",
+            "table": "incident",
+            "fields": {
+              "urgency": "1"
+            }
+          }
+        ]
+      },
+      "verification": {
+        "type": "state"
+      },
+      "report_fields": {
+        "number": "INC… or null"
+      },
+      "objective_sequence": [
+        "discovery",
+        "curation"
+      ]
+    },
+    "SN37": {
+      "label": "Create a user then raise an incident",
+      "objective": "identity",
+      "ask": "Create a new user with User ID wa.{{nonce}}.t, first name Tess, last name Moon{{nonce}} and email tess.moon.{{nonce}}@hearthline.test. Then create an incident with short description 'Laptop for wa.{{nonce}}.t' and urgency 3 - Low. If Caller is required, use the user you are logged in as.",
+      "start_path": "/sys_user.do?sys_id=-1",
+      "setup": [],
+      "constraints": {
+        "kind": "composite",
+        "parts": [
+          {
+            "kind": "created",
+            "table": "sys_user",
+            "where": [
+              [
+                "user_name",
+                "=",
+                "wa.{{nonce}}.t"
+              ],
+              [
+                "email",
+                "=",
+                "tess.moon.{{nonce}}@hearthline.test"
+              ]
+            ]
+          },
+          {
+            "kind": "created",
+            "table": "incident",
+            "where": [
+              [
+                "short_description",
+                "=",
+                "Laptop for wa.{{nonce}}.t"
+              ],
+              [
+                "urgency",
+                "=",
+                "3"
+              ]
+            ]
+          }
+        ]
+      },
+      "verification": {
+        "type": "state"
+      },
+      "report_fields": {
+        "user_name": "user id or null",
+        "number": "INC… or null"
+      },
+      "objective_sequence": [
+        "identity",
+        "service"
+      ]
+    },
+    "SN38": {
+      "label": "Count then report in a new incident",
+      "objective": "enumeration",
+      "ask": "Count the incidents with 'Batch {{nonce}}' in their short description, then create an incident with short description 'Batch report {{nonce}}' and description 'Count: <that number>'. If Caller is required, use the user you are logged in as.",
+      "start_path": "/incident_list.do",
+      "setup": [
+        {
+          "alias": "b1",
+          "table": "incident",
+          "fields": {
+            "short_description": "Batch {{nonce}} item 1"
+          }
+        },
+        {
+          "alias": "b2",
+          "table": "incident",
+          "fields": {
+            "short_description": "Batch {{nonce}} item 2"
+          }
+        },
+        {
+          "alias": "b3",
+          "table": "incident",
+          "fields": {
+            "short_description": "Batch {{nonce}} item 3"
+          }
+        },
+        {
+          "alias": "b4",
+          "table": "incident",
+          "fields": {
+            "short_description": "Batch {{nonce}} item 4"
+          }
+        }
+      ],
+      "constraints": {
+        "kind": "composite",
+        "parts": [
+          {
+            "kind": "created",
+            "table": "incident",
+            "where": [
+              [
+                "short_description",
+                "=",
+                "Batch report {{nonce}}"
+              ],
+              [
+                "description",
+                "LIKE",
+                "Count: 4"
+              ]
+            ]
+          }
+        ]
+      },
+      "verification": {
+        "type": "state"
+      },
+      "report_fields": {
+        "count": 0,
+        "number": "INC… or null"
+      },
+      "objective_sequence": [
+        "enumeration",
+        "service"
+      ]
+    }
+  }
+}

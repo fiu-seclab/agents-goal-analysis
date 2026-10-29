@@ -13,6 +13,7 @@ As users increasingly delegate routine tasks to autonomous browser agents inside
 
 ```text
 agents-goal-analysis/
+├── crawlers/         # Browser Use and Skyvern drivers, plus the three site run scripts
 ├── tracker/          # In-Page Collector & telemetry ingestion service (Section 4.1)
 ├── tasks/            # 117 task templates, universal goal taxonomy, and verifiers (Section 5.1)
 ├── analyzer/         # Trace normalizer and Site-Agnostic / Schema-Adapted models (Section 4.2)
@@ -22,6 +23,7 @@ agents-goal-analysis/
 
 | Module | Paper Section | Description |
 | :--- | :--- | :--- |
+| **`crawlers/`** | Section 5.1 | Browser Use and Skyvern wrappers (`browser-use-app/`, `skyvern-app/`) and the Storefront, ServiceNow, and Gitea run scripts. Agent libraries are installed from their packages. |
 | **`tracker/`** | Section 4.1 | Client-side JavaScript collector (`public/js/`) and Node.js/Socket.IO ingestion service that streams DOM interaction events without recording plaintext keystrokes or page text. |
 | **`tasks/`** | Section 5.1, Table 1 | Parameterized task definitions (`taxonomy_v2.json`) and server-side verification scripts across **Storefront** (40 tasks), **ServiceNow** (36 tasks), and **Code Forge / Gitea** (41 tasks). |
 | **`analyzer/`** | Section 4.1–4.2, Section 5.3 | Action-clock normalization (`tokens.py`), dual-mode prefix classifiers (`causal.py`: Random Forest, N-gram Forest, LSTM, Transformer, and Schema-Adapted ensemble), calibration learning curves (`calibration_curve.py`), and multi-granularity holdouts (`eval_hierarchy.py`). |
@@ -37,35 +39,51 @@ agents-goal-analysis/
 pip install -r requirements.txt
 ```
 
-### 2. Reproduce Paper Tables & Online Trigger Analysis
-Using the precomputed 5-seed evaluation logs in `data/results/`, you can directly reproduce the paper's empirical tables:
+### 2. Reproduce the paper tables and figures
+`data/results/` holds the five-seed logs. The scripts report the five universal goals. Site-Agnostic is the best of forest, n-gram, LSTM, and transformer on each cell. Schema-Adapted is the behavioral prior plus sanitized DOM and URL tokens.
 
 ```bash
-# Reproduce Table 2 (Main 5-Goal Results), Table 5 (Per-Architecture Breakdown), and Table 6 (Read/Write & Subsystems)
 python3 analysis/summarize_results.py
-
-# Reproduce Table 8 (Online Decision Rule tau_on(theta, m=2) and Pre-Commit k = kappa - 1)
 python3 analysis/online_trigger_eval.py
+python3 analysis/make_figures.py
+python3 analysis/make_result_figures.py
 ```
 
-### 3. Train & Evaluate Models Across Holdout Regimes
-To run the full 5-seed training and prefix evaluation pipeline (`analyzer/causal.py`):
+`summarize_results.py` prints the main holdout table, the four Site-Agnostic architectures, and the auxiliary read/write and subsystem table. `online_trigger_eval.py` prints the online rule \(\tau_{\text{on}}(\theta, m{=}2)\). The figure scripts write `fig_overview.pdf`, `fig_goal.pdf`, `fig_confusion.pdf`, and `fig_calibration.pdf`.
+
+### 3. Train the reported models
+`analyzer/causal.py` defaults to the five goals and the unseen-task holdout. Trees and neural models can be launched separately. New runs are written under `data/results/`.
 
 ```bash
-# Within-Agent Unseen Tasks & Seen Tasks (Held-Out Sessions)
-python3 analyzer/causal.py --target goal --group task --agents browser-use --seeds 5
-python3 analyzer/causal.py --target goal --group task --agents skyvern --seeds 5
-python3 analyzer/causal.py --target goal --group trial --agents browser-use --seeds 5
-python3 analyzer/causal.py --target goal --group trial --agents skyvern --seeds 5
+# Unseen tasks, then seen tasks (held-out sessions), per agent
+python3 analyzer/causal.py --group task --agents browser-use --models forest,ngram,stage2 --seeds 5
+python3 analyzer/causal.py --group task --agents browser-use --models lstm,transformer --seeds 5
+python3 analyzer/causal.py --group task --agents skyvern --models forest,ngram,stage2 --seeds 5
+python3 analyzer/causal.py --group task --agents skyvern --models lstm,transformer --seeds 5
+python3 analyzer/causal.py --group trial --agents browser-use --models forest,ngram,stage2 --seeds 5
+python3 analyzer/causal.py --group trial --agents skyvern --models forest,ngram,stage2 --seeds 5
 
-# Cross-Agent Transfer (Browser Use <-> Skyvern)
-python3 analyzer/causal.py --target goal --protocol cross --agents browser-use,skyvern --seeds 5
+# Cross-agent transfer
+python3 analyzer/causal.py --protocol cross --agents browser-use,skyvern --models forest,ngram,stage2 --seeds 5
 
-# Target-Site Calibration Curves (10% to 100% budget)
+# Unseen-task calibration curve (10% to 100%)
 python3 analyzer/calibration_curve.py task
+
+# Appendix: read/write, unseen subsystem, UI subsystems
+python3 analyzer/eval_hierarchy.py
 ```
 
-### 4. Deploy the In-Page Collector
+### 4. Run an agent on one task
+
+The paper agents are Browser Use and Skyvern. Setup, environment variables, and the three site runners are in [`crawlers/README.md`](crawlers/README.md).
+
+```bash
+cp crawlers/.env.example crawlers/.env
+python3 crawlers/storefront/run_tasks.py --print-prompts --tasks A --agents browser-use
+python3 crawlers/run_experiments.py --url "$TARGET_URL" --agents browser-use --dry-run
+```
+
+### 5. Deploy the In-Page Collector
 To run the telemetry ingestion server and inject the collector into a target web application:
 
 ```bash

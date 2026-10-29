@@ -1,0 +1,1761 @@
+{
+  "version": "1",
+  "site": "gitea",
+  "objectives": [
+    "discovery",
+    "retrieval",
+    "enumeration",
+    "curation",
+    "service",
+    "identity",
+    "transaction",
+    "availability"
+  ],
+  "agents": [
+    "browser-use",
+    "skyvern",
+    "human"
+  ],
+  "tasks": {
+    "GT01": {
+      "label": "Find a repository by description",
+      "objective": "discovery",
+      "ask": "Find the repository owned by studyadmin whose description mentions badge printing (code {{nonce}}). Report its repository name.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "alpha-{{nonce}}",
+          "description": "Inventory sync service {{nonce}}",
+          "default_branch": "main"
+        },
+        {
+          "alias": "r2",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "beta-{{nonce}}",
+          "description": "Badge printing tool {{nonce}}",
+          "default_branch": "main"
+        },
+        {
+          "alias": "r3",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "gamma-{{nonce}}",
+          "description": "Release notes generator {{nonce}}",
+          "default_branch": "main"
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "name",
+        "expected": "{{r2.name}}"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "name": "repository name or null"
+      }
+    },
+    "GT02": {
+      "label": "Find an issue by description",
+      "objective": "discovery",
+      "ask": "In the repository {{r1.full_name}}, find the issue about exporting to CSV and report its issue number.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "i1",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Login page crashes on empty password {{nonce}}",
+          "body": ""
+        },
+        {
+          "alias": "i2",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Export to CSV drops the header row {{nonce}}",
+          "body": ""
+        },
+        {
+          "alias": "i3",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Dark mode flickers on reload {{nonce}}",
+          "body": ""
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "number",
+        "expected": "{{i2.number}}",
+        "digits": true
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "number": "issue number or null"
+      }
+    },
+    "GT03": {
+      "label": "Find a user by full name",
+      "objective": "discovery",
+      "ask": "Find the user whose full name is 'Facilities Lead {{nonce}}'. Report that user's username.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "u1",
+          "op": "user",
+          "login": "pl-{{nonce}}",
+          "full_name": "Planner {{nonce}}"
+        },
+        {
+          "alias": "u2",
+          "op": "user",
+          "login": "fl-{{nonce}}",
+          "full_name": "Facilities Lead {{nonce}}"
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "username",
+        "expected": "{{u2.login}}"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "username": "username or null"
+      }
+    },
+    "GT04": {
+      "label": "Find an issue by label",
+      "objective": "discovery",
+      "ask": "In the repository {{r1.full_name}}, find the open issue that has the label 'urgent-{{nonce}}'. Report its issue number.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "l1",
+          "op": "label",
+          "repo": "r1",
+          "name": "urgent-{{nonce}}"
+        },
+        {
+          "alias": "i1",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Typo on landing page {{nonce}}",
+          "body": ""
+        },
+        {
+          "alias": "i2",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Checkout fails for guests {{nonce}}",
+          "body": "",
+          "labels": [
+            "l1"
+          ]
+        },
+        {
+          "alias": "i3",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Update screenshots {{nonce}}",
+          "body": ""
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "number",
+        "expected": "{{i2.number}}",
+        "digits": true
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "number": "issue number or null"
+      }
+    },
+    "GT05": {
+      "label": "Find a pull request by description",
+      "objective": "discovery",
+      "ask": "In the repository {{r1.full_name}}, find the open pull request that fixes a typo. Report its pull request number.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "p1",
+          "op": "pr",
+          "repo": "r1",
+          "branch": "typo-{{nonce}}",
+          "title": "Fix typo in README {{nonce}}"
+        },
+        {
+          "alias": "p2",
+          "op": "pr",
+          "repo": "r1",
+          "branch": "export-{{nonce}}",
+          "title": "Add export button {{nonce}}"
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "number",
+        "expected": "{{p1.number}}",
+        "digits": true
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "number": "pull request number or null"
+      }
+    },
+    "GT06": {
+      "label": "Read a value from an issue description",
+      "objective": "retrieval",
+      "ask": "Open issue #{{i1.number}} in {{r1.full_name}} and report the locker code written in its description.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "i1",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Locker will not open {{nonce}}",
+          "body": "Employee cannot open the locker. Locker code: ZX{{nonce}}-77"
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "code",
+        "expected": "ZX{{nonce}}-77"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "code": "the code or null"
+      }
+    },
+    "GT07": {
+      "label": "Read a repository's default branch",
+      "objective": "retrieval",
+      "ask": "Open the repository {{r1.full_name}} and report its default branch name.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "trunk"
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "branch",
+        "expected": "trunk"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "branch": "branch name or null"
+      }
+    },
+    "GT08": {
+      "label": "Read a user's email",
+      "objective": "retrieval",
+      "ask": "Find the email address of the user {{u1.login}} (Site Administration, User Accounts) and report it.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "u1",
+          "op": "user",
+          "login": "rp-{{nonce}}",
+          "full_name": "Rui Park {{nonce}}",
+          "email": "rui.park.{{nonce}}@hearthline.test"
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "email",
+        "expected": "{{u1.email}}"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "email": "address or null"
+      }
+    },
+    "GT09": {
+      "label": "Read an issue's assignee",
+      "objective": "retrieval",
+      "ask": "Open issue #{{i1.number}} in {{r1.full_name}} and report the username it is assigned to.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "u1",
+          "op": "user",
+          "login": "as-{{nonce}}",
+          "full_name": "Asha Rao {{nonce}}"
+        },
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "{{u1.login}}",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "i1",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Review release checklist {{nonce}}",
+          "body": "",
+          "assignees": [
+            "{{u1.login}}"
+          ]
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "assignee",
+        "expected": "{{u1.login}}"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "assignee": "username or null"
+      }
+    },
+    "GT10": {
+      "label": "Read an issue's label",
+      "objective": "retrieval",
+      "ask": "Open issue #{{i1.number}} in {{r1.full_name}} and report the name of its label.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "l1",
+          "op": "label",
+          "repo": "r1",
+          "name": "needs-info-{{nonce}}"
+        },
+        {
+          "alias": "i1",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Cannot reproduce on Safari {{nonce}}",
+          "body": "",
+          "labels": [
+            "l1"
+          ]
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "label",
+        "expected": "{{l1.name}}"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "label": "label name or null"
+      }
+    },
+    "GT11": {
+      "label": "Count issues in a repository",
+      "objective": "enumeration",
+      "ask": "How many issues (open and closed) does the repository {{r1.full_name}} have? Report the count.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "b1",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Batch {{nonce}} item 1",
+          "body": ""
+        },
+        {
+          "alias": "b2",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Batch {{nonce}} item 2",
+          "body": ""
+        },
+        {
+          "alias": "b3",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Batch {{nonce}} item 3",
+          "body": ""
+        },
+        {
+          "alias": "b4",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Batch {{nonce}} item 4",
+          "body": ""
+        },
+        {
+          "alias": "b5",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Batch {{nonce}} item 5",
+          "body": ""
+        },
+        {
+          "alias": "b6",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Batch {{nonce}} item 6",
+          "body": ""
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "count",
+        "expected_count": {
+          "path": "/repos/{{r1.full_name}}/issues?state=all&type=issues"
+        }
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "count": 0
+      }
+    },
+    "GT12": {
+      "label": "Count closed issues",
+      "objective": "enumeration",
+      "ask": "How many closed issues does the repository {{r1.full_name}} have? Report the count.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "b1",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Batch {{nonce}} item 1",
+          "body": "",
+          "closed": true
+        },
+        {
+          "alias": "b2",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Batch {{nonce}} item 2",
+          "body": "",
+          "closed": true
+        },
+        {
+          "alias": "b3",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Batch {{nonce}} item 3",
+          "body": "",
+          "closed": false
+        },
+        {
+          "alias": "b4",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Batch {{nonce}} item 4",
+          "body": "",
+          "closed": false
+        },
+        {
+          "alias": "b5",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Batch {{nonce}} item 5",
+          "body": "",
+          "closed": false
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "count",
+        "expected_count": {
+          "path": "/repos/{{r1.full_name}}/issues?state=closed&type=issues"
+        }
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "count": 0
+      }
+    },
+    "GT13": {
+      "label": "Count a user's repositories",
+      "objective": "enumeration",
+      "ask": "How many repositories does the user {{u1.login}} own? Report the count.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "u1",
+          "op": "user",
+          "login": "co-{{nonce}}",
+          "full_name": "Collector {{nonce}}"
+        },
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "{{u1.login}}",
+          "name": "stash-{{nonce}}-1",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "r2",
+          "op": "repo",
+          "owner": "{{u1.login}}",
+          "name": "stash-{{nonce}}-2",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "r3",
+          "op": "repo",
+          "owner": "{{u1.login}}",
+          "name": "stash-{{nonce}}-3",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "r4",
+          "op": "repo",
+          "owner": "{{u1.login}}",
+          "name": "stash-{{nonce}}-4",
+          "description": "",
+          "default_branch": "main"
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "count",
+        "expected_count": {
+          "path": "/users/{{u1.login}}/repos"
+        }
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "count": 0
+      }
+    },
+    "GT14": {
+      "label": "Sort the issue list and read the first row",
+      "objective": "enumeration",
+      "ask": "Open the issue list of {{r1.full_name}}, sort it by Oldest, and report the title of the first issue.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "o1",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Order {{nonce}} A",
+          "body": ""
+        },
+        {
+          "alias": "o2",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Order {{nonce}} B",
+          "body": ""
+        },
+        {
+          "alias": "o3",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Order {{nonce}} C",
+          "body": ""
+        },
+        {
+          "alias": "o4",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Order {{nonce}} D",
+          "body": ""
+        },
+        {
+          "alias": "o5",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Order {{nonce}} E",
+          "body": ""
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "title",
+        "expected": "Order {{nonce}} A"
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "title": "issue title or null"
+      }
+    },
+    "GT15": {
+      "label": "Count labels",
+      "objective": "enumeration",
+      "ask": "How many labels does the repository {{r1.full_name}} define? Report the count.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "l1",
+          "op": "label",
+          "repo": "r1",
+          "name": "area-{{nonce}}-1"
+        },
+        {
+          "alias": "l2",
+          "op": "label",
+          "repo": "r1",
+          "name": "area-{{nonce}}-2"
+        },
+        {
+          "alias": "l3",
+          "op": "label",
+          "repo": "r1",
+          "name": "area-{{nonce}}-3"
+        },
+        {
+          "alias": "l4",
+          "op": "label",
+          "repo": "r1",
+          "name": "area-{{nonce}}-4"
+        },
+        {
+          "alias": "l5",
+          "op": "label",
+          "repo": "r1",
+          "name": "area-{{nonce}}-5"
+        }
+      ],
+      "constraints": {
+        "kind": "report",
+        "key": "count",
+        "expected_count": {
+          "path": "/repos/{{r1.full_name}}/labels"
+        }
+      },
+      "verification": {
+        "type": "self_report"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "count": 0
+      }
+    },
+    "GT16": {
+      "label": "Rename an issue",
+      "objective": "curation",
+      "ask": "Open issue #{{i1.number}} in {{r1.full_name}} and change its title to 'Search is slow {{nonce}}'. Save it.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "i1",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Slow search {{nonce}}",
+          "body": ""
+        }
+      ],
+      "constraints": {
+        "kind": "rest",
+        "path": "/repos/{{r1.full_name}}/issues/{{i1.number}}",
+        "status": 200,
+        "json": {
+          "title": "Search is slow {{nonce}}"
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT17": {
+      "label": "Add a label to an issue",
+      "objective": "curation",
+      "ask": "Open issue #{{i1.number}} in {{r1.full_name}} and add the label 'bug-{{nonce}}' to it.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "l1",
+          "op": "label",
+          "repo": "r1",
+          "name": "bug-{{nonce}}"
+        },
+        {
+          "alias": "i1",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Crash on logout {{nonce}}",
+          "body": ""
+        }
+      ],
+      "constraints": {
+        "kind": "rest",
+        "path": "/repos/{{r1.full_name}}/issues/{{i1.number}}",
+        "status": 200,
+        "json": {
+          "labels[].name": "bug-{{nonce}}"
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT18": {
+      "label": "Assign an issue",
+      "objective": "curation",
+      "ask": "Open issue #{{i1.number}} in {{r1.full_name}} and assign it to the user {{u1.login}}.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "u1",
+          "op": "user",
+          "login": "ow-{{nonce}}",
+          "full_name": "Owner {{nonce}}"
+        },
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "{{u1.login}}",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "i1",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Tidy changelog {{nonce}}",
+          "body": ""
+        }
+      ],
+      "constraints": {
+        "kind": "rest",
+        "path": "/repos/{{r1.full_name}}/issues/{{i1.number}}",
+        "status": 200,
+        "json": {
+          "assignees[].login": "{{u1.login}}"
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT19": {
+      "label": "Close an issue",
+      "objective": "curation",
+      "ask": "Open issue #{{i1.number}} in {{r1.full_name}} and close it.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "i1",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Remove old banner {{nonce}}",
+          "body": ""
+        }
+      ],
+      "constraints": {
+        "kind": "rest",
+        "path": "/repos/{{r1.full_name}}/issues/{{i1.number}}",
+        "status": 200,
+        "json": {
+          "state": "closed"
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT20": {
+      "label": "Edit a repository description",
+      "objective": "curation",
+      "ask": "Open the settings of the repository {{r1.full_name}} and change its description to 'Updated description {{nonce}}'. Save it.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "Old description",
+          "default_branch": "main"
+        }
+      ],
+      "constraints": {
+        "kind": "rest",
+        "path": "/repos/{{r1.full_name}}",
+        "status": 200,
+        "json": {
+          "description": "Updated description {{nonce}}"
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT21": {
+      "label": "Open an issue",
+      "objective": "service",
+      "ask": "In the repository {{r1.full_name}}, open a new issue titled 'Search timeout {{nonce}}' with the description 'Search takes over 30 seconds'.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        }
+      ],
+      "constraints": {
+        "kind": "rest_list",
+        "path": "/repos/{{r1.full_name}}/issues?state=all&type=issues",
+        "any": {
+          "title": "Search timeout {{nonce}}",
+          "body": "~over 30 seconds"
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "number": "issue number or null"
+      }
+    },
+    "GT22": {
+      "label": "Open an issue with a label",
+      "objective": "service",
+      "ask": "In the repository {{r1.full_name}}, open a new issue titled 'Crash on save {{nonce}}' and give it the label 'bug-{{nonce}}'.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "l1",
+          "op": "label",
+          "repo": "r1",
+          "name": "bug-{{nonce}}"
+        }
+      ],
+      "constraints": {
+        "kind": "rest_list",
+        "path": "/repos/{{r1.full_name}}/issues?state=all&type=issues",
+        "any": {
+          "title": "Crash on save {{nonce}}",
+          "labels[].name": "bug-{{nonce}}"
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "number": "issue number or null"
+      }
+    },
+    "GT23": {
+      "label": "Comment on an issue",
+      "objective": "service",
+      "ask": "Open issue #{{i1.number}} in {{r1.full_name}} and post the comment 'Reproduced on v2 {{nonce}}'.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "i1",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Intermittent 500 error {{nonce}}",
+          "body": ""
+        }
+      ],
+      "constraints": {
+        "kind": "rest_list",
+        "path": "/repos/{{r1.full_name}}/issues/{{i1.number}}/comments",
+        "any": {
+          "body": "Reproduced on v2 {{nonce}}"
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT24": {
+      "label": "Open an issue assigned to someone",
+      "objective": "service",
+      "ask": "In the repository {{r1.full_name}}, open a new issue titled 'Review needed {{nonce}}' and assign it to {{u1.login}}.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "u1",
+          "op": "user",
+          "login": "rv-{{nonce}}",
+          "full_name": "Reviewer {{nonce}}"
+        },
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "{{u1.login}}",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        }
+      ],
+      "constraints": {
+        "kind": "rest_list",
+        "path": "/repos/{{r1.full_name}}/issues?state=all&type=issues",
+        "any": {
+          "title": "Review needed {{nonce}}",
+          "assignees[].login": "{{u1.login}}"
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "number": "issue number or null"
+      }
+    },
+    "GT25": {
+      "label": "Open a pull request",
+      "objective": "service",
+      "ask": "In the repository {{r1.full_name}}, open a pull request from the branch 'notes-{{nonce}}' into main with the title 'Add notes {{nonce}}'.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "b1",
+          "op": "branch",
+          "repo": "r1",
+          "branch": "notes-{{nonce}}"
+        }
+      ],
+      "constraints": {
+        "kind": "rest_list",
+        "path": "/repos/{{r1.full_name}}/pulls?state=open",
+        "any": {
+          "title": "Add notes {{nonce}}",
+          "head.ref": "notes-{{nonce}}"
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "number": "pull request number or null"
+      }
+    },
+    "GT26": {
+      "label": "Create a user",
+      "objective": "identity",
+      "ask": "As the site administrator, create a new user account with username wa-{{nonce}}-new, email maya.chen.{{nonce}}@hearthline.test and password 'Study-Pass-1!'. Do not require a password change.",
+      "start_path": "/",
+      "setup": [],
+      "constraints": {
+        "kind": "rest",
+        "path": "/users/wa-{{nonce}}-new",
+        "status": 200,
+        "json": {
+          "email": "maya.chen.{{nonce}}@hearthline.test"
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "username": "username or null"
+      }
+    },
+    "GT27": {
+      "label": "Create a user with a full name",
+      "objective": "identity",
+      "ask": "As the site administrator, create a new user account with username wb-{{nonce}}-new, email dev.rao.{{nonce}}@hearthline.test, full name 'Dev Rao {{nonce}}' and password 'Study-Pass-1!'. Do not require a password change.",
+      "start_path": "/",
+      "setup": [],
+      "constraints": {
+        "kind": "rest",
+        "path": "/users/wb-{{nonce}}-new",
+        "status": 200,
+        "json": {
+          "full_name": "Dev Rao {{nonce}}"
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "username": "username or null"
+      }
+    },
+    "GT28": {
+      "label": "Change a user's email",
+      "objective": "identity",
+      "ask": "As the site administrator, open the account of the user {{u1.login}} (Site Administration, User Accounts, Edit) and change the email to renamed.{{nonce}}@hearthline.test.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "u1",
+          "op": "user",
+          "login": "em-{{nonce}}",
+          "full_name": "Eli Voss {{nonce}}",
+          "email": "eli.{{nonce}}@hearthline.test"
+        }
+      ],
+      "constraints": {
+        "kind": "rest",
+        "path": "/users/{{u1.login}}",
+        "status": 200,
+        "json": {
+          "email": "renamed.{{nonce}}@hearthline.test"
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT29": {
+      "label": "Change a user's full name",
+      "objective": "identity",
+      "ask": "As the site administrator, open the account of the user {{u1.login}} and change the full name to 'Mo Lee {{nonce}}'.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "u1",
+          "op": "user",
+          "login": "fn-{{nonce}}",
+          "full_name": "Mo Old {{nonce}}"
+        }
+      ],
+      "constraints": {
+        "kind": "rest",
+        "path": "/users/{{u1.login}}",
+        "status": 200,
+        "json": {
+          "full_name": "Mo Lee {{nonce}}"
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT30": {
+      "label": "Prohibit a user from logging in",
+      "objective": "identity",
+      "ask": "As the site administrator, open the account of the user {{u1.login}} and prohibit that account from logging in. Save it.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "u1",
+          "op": "user",
+          "login": "pb-{{nonce}}",
+          "full_name": "Dee Kim {{nonce}}"
+        }
+      ],
+      "constraints": {
+        "kind": "rest",
+        "path": "/users/{{u1.login}}",
+        "status": 200,
+        "json": {
+          "prohibit_login": true
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT31": {
+      "label": "Merge a pull request (merge)",
+      "objective": "transaction",
+      "ask": "Open pull request #{{p1.number}} in {{r1.full_name}} and merge it using 'Create merge commit'.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "p1",
+          "op": "pr",
+          "repo": "r1",
+          "branch": "change-{{nonce}}",
+          "title": "Update docs {{nonce}}"
+        }
+      ],
+      "constraints": {
+        "kind": "rest",
+        "path": "/repos/{{r1.full_name}}/pulls/{{p1.number}}",
+        "status": 200,
+        "json": {
+          "merged": true
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT32": {
+      "label": "Merge a pull request (squash)",
+      "objective": "transaction",
+      "ask": "Open pull request #{{p1.number}} in {{r1.full_name}} and merge it using 'Squash and merge'.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "p1",
+          "op": "pr",
+          "repo": "r1",
+          "branch": "change-{{nonce}}",
+          "title": "Update docs {{nonce}}"
+        }
+      ],
+      "constraints": {
+        "kind": "rest",
+        "path": "/repos/{{r1.full_name}}/pulls/{{p1.number}}",
+        "status": 200,
+        "json": {
+          "merged": true
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT33": {
+      "label": "Merge a pull request (rebase)",
+      "objective": "transaction",
+      "ask": "Open pull request #{{p1.number}} in {{r1.full_name}} and merge it using 'Rebase and merge'.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "p1",
+          "op": "pr",
+          "repo": "r1",
+          "branch": "change-{{nonce}}",
+          "title": "Update docs {{nonce}}"
+        }
+      ],
+      "constraints": {
+        "kind": "rest",
+        "path": "/repos/{{r1.full_name}}/pulls/{{p1.number}}",
+        "status": 200,
+        "json": {
+          "merged": true
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT34": {
+      "label": "Delete a repository",
+      "objective": "transaction",
+      "ask": "Permanently delete the repository {{r1.full_name}} (Settings, Danger Zone).",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "scratch-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        }
+      ],
+      "constraints": {
+        "kind": "rest",
+        "path": "/repos/{{r1.full_name}}",
+        "status": 404,
+        "json": {}
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT35": {
+      "label": "Publish a release",
+      "objective": "transaction",
+      "ask": "In the repository {{r1.full_name}}, publish a release with the tag v1.0-{{nonce}} and the title 'First release {{nonce}}', targeting main.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        }
+      ],
+      "constraints": {
+        "kind": "rest",
+        "path": "/repos/{{r1.full_name}}/releases/tags/v1.0-{{nonce}}",
+        "status": 200,
+        "json": {
+          "name": "First release {{nonce}}"
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT36": {
+      "label": "Watch a repository",
+      "objective": "availability",
+      "ask": "Watch the repository {{r1.full_name}} so you are notified about new activity.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "u1",
+          "op": "user",
+          "login": "w1-{{nonce}}",
+          "full_name": "Watched {{nonce}}"
+        },
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "{{u1.login}}",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        }
+      ],
+      "constraints": {
+        "kind": "rest",
+        "path": "/repos/{{r1.full_name}}/subscription",
+        "status": 200
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT37": {
+      "label": "Watch another repository",
+      "objective": "availability",
+      "ask": "Start watching the repository {{r1.full_name}}.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "u1",
+          "op": "user",
+          "login": "w2-{{nonce}}",
+          "full_name": "Watched {{nonce}}"
+        },
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "{{u1.login}}",
+          "name": "tools-{{nonce}}",
+          "description": "Shared tools",
+          "default_branch": "main"
+        }
+      ],
+      "constraints": {
+        "kind": "rest",
+        "path": "/repos/{{r1.full_name}}/subscription",
+        "status": 200
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT38": {
+      "label": "Watch two repositories",
+      "objective": "availability",
+      "ask": "Watch both repositories {{r1.full_name}} and {{r2.full_name}}.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "u1",
+          "op": "user",
+          "login": "w3-{{nonce}}",
+          "full_name": "Watched {{nonce}}"
+        },
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "{{u1.login}}",
+          "name": "web-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "r2",
+          "op": "repo",
+          "owner": "{{u1.login}}",
+          "name": "api-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        }
+      ],
+      "constraints": {
+        "kind": "composite",
+        "parts": [
+          {
+            "kind": "rest",
+            "path": "/repos/{{r1.full_name}}/subscription",
+            "status": 200
+          },
+          {
+            "kind": "rest",
+            "path": "/repos/{{r2.full_name}}/subscription",
+            "status": 200
+          }
+        ]
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT39": {
+      "label": "Subscribe to an issue",
+      "objective": "availability",
+      "ask": "Subscribe to issue #{{i1.number}} in {{r1.full_name}} so you are notified of its updates.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "u1",
+          "op": "user",
+          "login": "s1-{{nonce}}",
+          "full_name": "Author {{nonce}}"
+        },
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "{{u1.login}}",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "i1",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Flaky deploy step {{nonce}}",
+          "body": "",
+          "as": "{{u1.login}}"
+        }
+      ],
+      "constraints": {
+        "kind": "rest",
+        "path": "/repos/{{r1.full_name}}/issues/{{i1.number}}/subscriptions/check",
+        "status": 200,
+        "json": {
+          "subscribed": true
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT40": {
+      "label": "Subscribe to a pull request",
+      "objective": "availability",
+      "ask": "Subscribe to pull request #{{p1.number}} in {{r1.full_name}} so you are notified of its updates.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "u1",
+          "op": "user",
+          "login": "s2-{{nonce}}",
+          "full_name": "Author {{nonce}}"
+        },
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "{{u1.login}}",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "p1",
+          "op": "pr",
+          "repo": "r1",
+          "branch": "feat-{{nonce}}",
+          "title": "Add retry logic {{nonce}}",
+          "as": "{{u1.login}}"
+        }
+      ],
+      "constraints": {
+        "kind": "rest",
+        "path": "/repos/{{r1.full_name}}/issues/{{p1.number}}/subscriptions/check",
+        "status": 200,
+        "json": {
+          "subscribed": true
+        }
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console."
+    },
+    "GT41": {
+      "label": "Find an issue, then label and close it",
+      "objective": "discovery",
+      "ask": "In the repository {{r1.full_name}}, find the issue about exporting to CSV, add the label 'triaged-{{nonce}}' to it and close it.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "l1",
+          "op": "label",
+          "repo": "r1",
+          "name": "triaged-{{nonce}}"
+        },
+        {
+          "alias": "i1",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Login page crashes on empty password {{nonce}}",
+          "body": ""
+        },
+        {
+          "alias": "i2",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Export to CSV drops the header row {{nonce}}",
+          "body": ""
+        }
+      ],
+      "constraints": {
+        "kind": "composite",
+        "parts": [
+          {
+            "kind": "rest",
+            "path": "/repos/{{r1.full_name}}/issues/{{i2.number}}",
+            "status": 200,
+            "json": {
+              "state": "closed",
+              "labels[].name": "triaged-{{nonce}}"
+            }
+          }
+        ]
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "number": "issue number or null"
+      },
+      "objective_sequence": [
+        "discovery",
+        "curation"
+      ]
+    },
+    "GT42": {
+      "label": "Create a user, then open an issue about them",
+      "objective": "identity",
+      "ask": "As the site administrator, create a user account with username wt-{{nonce}}, email tess.moon.{{nonce}}@hearthline.test and password 'Study-Pass-1!' (no password change required). Then, in the repository {{r1.full_name}}, open an issue titled 'Welcome wt-{{nonce}}'.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        }
+      ],
+      "constraints": {
+        "kind": "composite",
+        "parts": [
+          {
+            "kind": "rest",
+            "path": "/users/wt-{{nonce}}",
+            "status": 200,
+            "json": {
+              "email": "tess.moon.{{nonce}}@hearthline.test"
+            }
+          },
+          {
+            "kind": "rest_list",
+            "path": "/repos/{{r1.full_name}}/issues?state=all&type=issues",
+            "any": {
+              "title": "Welcome wt-{{nonce}}"
+            }
+          }
+        ]
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "username": "username or null"
+      },
+      "objective_sequence": [
+        "identity",
+        "service"
+      ]
+    },
+    "GT43": {
+      "label": "Count issues, then report the count in a new issue",
+      "objective": "enumeration",
+      "ask": "Count the issues in the repository {{r1.full_name}} as it is now (before you add anything), then open an issue titled 'Batch report {{nonce}}' whose description is 'Count: <that number>'.",
+      "start_path": "/",
+      "setup": [
+        {
+          "alias": "r1",
+          "op": "repo",
+          "owner": "studyadmin",
+          "name": "proj-{{nonce}}",
+          "description": "",
+          "default_branch": "main"
+        },
+        {
+          "alias": "b1",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Batch {{nonce}} item 1",
+          "body": ""
+        },
+        {
+          "alias": "b2",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Batch {{nonce}} item 2",
+          "body": ""
+        },
+        {
+          "alias": "b3",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Batch {{nonce}} item 3",
+          "body": ""
+        },
+        {
+          "alias": "b4",
+          "op": "issue",
+          "repo": "r1",
+          "title": "Batch {{nonce}} item 4",
+          "body": ""
+        }
+      ],
+      "constraints": {
+        "kind": "composite",
+        "parts": [
+          {
+            "kind": "rest_list",
+            "path": "/repos/{{r1.full_name}}/issues?state=all&type=issues",
+            "any": {
+              "title": "Batch report {{nonce}}",
+              "body": "~count: 4"
+            }
+          }
+        ]
+      },
+      "verification": {
+        "type": "state"
+      },
+      "hint": "Use the Gitea web UI only. Do not use the API, git over SSH, or the browser console.",
+      "report_fields": {
+        "count": 0
+      },
+      "objective_sequence": [
+        "enumeration",
+        "service"
+      ]
+    }
+  }
+}

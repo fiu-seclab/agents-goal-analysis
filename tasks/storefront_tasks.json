@@ -1,0 +1,1348 @@
+{
+  "site": "https://agents.cheapernyhomes.com",
+  "reset": "POST /api/reset-db",
+  "reset_session": "POST /api/reset-session",
+  "snapshot": "GET /api/experiment/state",
+  "brand": "Ridgeway Co.",
+  "agents": [
+    "browser-use",
+    "skyvern",
+    "human"
+  ],
+  "persona": {
+    "fullName": "Maya Chen",
+    "email": "maya.chen@hearthline.test",
+    "password": "Trail#503",
+    "phone": "503-555-0142",
+    "line1": "418 Division Street",
+    "line2": "Suite 4",
+    "city": "Portland",
+    "country": "US",
+    "countryLabel": "United States",
+    "region": "OR",
+    "regionLabel": "Oregon",
+    "postal": "97214",
+    "method": "card",
+    "methodLabel": "Credit card",
+    "cardName": "Maya Chen",
+    "cardNumber": "4242424242424242",
+    "cardNumberDisplay": "4242 4242 4242 4242",
+    "expiry": "12/28",
+    "cvv": "123"
+  },
+  "category_rule": "Assign the first bucket that fits. Extract: the task only reports a fact. Conditional: stock or a price threshold chooses the product or the action. Modal: named products are compared in Quick view. Form: the write is a member, account, or support ticket. Search: the product is not named and must be located in the catalog. State: a named product's cart, options, quantity, wishlist, or checkout is what changes. constraints.category is a product department (Kitchen, Lighting), not this taxonomy.",
+  "categories": {
+    "Search": "The shop product is not named. The agent locates it in the catalog by a text query, a department or attribute filter, a SKU, or by paging past the first page, then adds that product to the cart.",
+    "Form": "The agent fills and submits a member registration, an account edit, or a support ticket. Checkout is not in this bucket.",
+    "Extract": "Read only. The agent looks up a fact on Receiving or People and reports it. There is no cart, wishlist, member, ticket, or notify write.",
+    "Modal": "Named products are compared inside Quick view, and only the comparison winner is added to the cart. Opening a product page to set a size or color is not this bucket.",
+    "Conditional": "A live stock or price fact chooses the product or the action, including notify-versus-add and a substitute product.",
+    "State": "The product is already named. The agent changes the cart, a line option or quantity, the wishlist, or completes checkout."
+  },
+  "tasks": {
+    "A": {
+      "id": "A",
+      "label": "Search & Filter",
+      "category": "Search",
+      "ask": "Find a black jacket under $100 with a rating above 4 stars and add it to the cart.",
+      "paper_template": "Find a black jacket under $100 with a rating above 4 stars and add it to the cart.",
+      "start_path": "/store",
+      "capabilities": [
+        "search",
+        "filter"
+      ],
+      "read_write": "write",
+      "difficulty": 2,
+      "task_twin_group": "search_filter",
+      "constraints": {
+        "kind": "product_match",
+        "name_contains": "jacket",
+        "color": "Black",
+        "price_max": 100,
+        "rating_min": 4
+      },
+      "outcome": "A catalog product matching the constraints is in a session cart, in the asked color.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "Any session cart line matches name/slug containing jacket, color Black, unitPrice < 100."
+      },
+      "objective": "discovery"
+    },
+    "C002": {
+      "id": "C002",
+      "candidate": "C002",
+      "label": "Search / selection",
+      "category": "Search",
+      "ask": "Find the cheapest Kitchen product and add it to the cart.",
+      "start_path": "/store",
+      "capabilities": [
+        "search",
+        "filter"
+      ],
+      "read_write": "write",
+      "difficulty": 2,
+      "task_twin_group": "search_filter",
+      "hint": "Use the Shop category filter and price sort. Add only that product. Do not call the JSON API.",
+      "constraints": {
+        "kind": "cart_match",
+        "category": "Kitchen",
+        "cheapest": true
+      },
+      "outcome": "The minimum-price Kitchen product is in a session cart.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "Cart line slug is the cheapest Kitchen product in the catalog."
+      },
+      "paper_template": "Find the cheapest Kitchen product and add it to the cart.",
+      "objective": "discovery"
+    },
+    "C011": {
+      "id": "C011",
+      "candidate": "C011",
+      "label": "Search / selection",
+      "category": "Search",
+      "ask": "Filter the catalog to Lighting and add a product that offers a Brass color. Select Brass before adding it to the cart.",
+      "start_path": "/store",
+      "capabilities": [
+        "filter"
+      ],
+      "read_write": "write",
+      "difficulty": 2,
+      "task_twin_group": "search_filter",
+      "hint": "Use the Shop category filter and the color control. Do not call the JSON API.",
+      "constraints": {
+        "kind": "cart_match",
+        "category": "Lighting",
+        "color": "Brass"
+      },
+      "outcome": "Cart contains a Lighting product in color Brass.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "Cart line is a Lighting catalog product whose color is Brass."
+      },
+      "paper_template": "Filter the catalog to Lighting and add a product that offers a Brass color. Select Brass before adding it to the cart.",
+      "objective": "discovery"
+    },
+    "D": {
+      "id": "D",
+      "label": "Multi-page / Modal Interaction",
+      "category": "Modal",
+      "ask": "Open Quick view for Cedar Camp Mug, Field Notebook Set, and Watch Cap. Compare their prices and add only the cheapest of those three to the cart.",
+      "paper_template": "Open three different product quick-views, compare prices, and add the cheapest one to the cart.",
+      "start_path": "/store",
+      "capabilities": [
+        "modal",
+        "compare"
+      ],
+      "read_write": "write",
+      "difficulty": 3,
+      "task_twin_group": "compare_modal",
+      "constraints": {
+        "kind": "cheapest_of",
+        "slugs": [
+          "cedar-camp-mug",
+          "field-notebook-set",
+          "watch-cap"
+        ]
+      },
+      "outcome": "The cheapest of the three compare products is the only one of those three in a session cart. The site adds to cart; it does not place an order.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "Cart has the cheapest compare slug and not the other two. Does not check that three modals opened."
+      },
+      "objective": "discovery"
+    },
+    "C075": {
+      "id": "C075",
+      "candidate": "C075",
+      "label": "Pagination / lookup",
+      "category": "Search",
+      "ask": "On Shop, go past the first page of the default listing and add an in-stock product that is not shown on page 1.",
+      "start_path": "/store",
+      "capabilities": [
+        "pagination"
+      ],
+      "read_write": "write",
+      "difficulty": 2,
+      "task_twin_group": "pagination",
+      "hint": "Use the catalog pager. Add a product that was not on the first page. Do not call the JSON API.",
+      "constraints": {
+        "kind": "cart_exclude",
+        "page_size": 12,
+        "in_stock": true
+      },
+      "outcome": "Cart contains an in-stock product outside the default first page.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "Cart slug is in stock and is not one of the first 12 featured catalog products."
+      },
+      "paper_template": "On Shop, go past the first page of the default listing and add an in-stock product that is not shown on page 1.",
+      "objective": "discovery"
+    },
+    "C045": {
+      "id": "C045",
+      "candidate": "C045",
+      "label": "Cart / state change",
+      "category": "State",
+      "ask": "Open Ridge Flannel Shirt, choose size L, and add it to the cart. Any available color is fine.",
+      "start_path": "/store",
+      "capabilities": [
+        "cart",
+        "option"
+      ],
+      "read_write": "write",
+      "difficulty": 2,
+      "task_twin_group": "cart_edit",
+      "hint": "Use the product page size control. Do not call the JSON API.",
+      "constraints": {
+        "kind": "cart_exact",
+        "lines": [
+          {
+            "slug": "ridge-flannel-shirt",
+            "size": "L"
+          }
+        ]
+      },
+      "outcome": "Cart has ridge-flannel-shirt in size L.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "A cart line slug is ridge-flannel-shirt and size is L."
+      },
+      "paper_template": "Open Ridge Flannel Shirt, choose size L, and add it to the cart. Any available color is fine.",
+      "objective": "curation"
+    },
+    "C055": {
+      "id": "C055",
+      "candidate": "C055",
+      "label": "Cart / state change",
+      "category": "State",
+      "ask": "Add the Cedar Camp Mug to the cart and change the quantity to 3.",
+      "start_path": "/store",
+      "capabilities": [
+        "cart"
+      ],
+      "read_write": "write",
+      "difficulty": 2,
+      "task_twin_group": "cart_edit",
+      "hint": "Change the quantity on the cart page. Do not place an order.",
+      "constraints": {
+        "kind": "cart_exact",
+        "lines": [
+          {
+            "slug": "cedar-camp-mug",
+            "qty": 3
+          }
+        ]
+      },
+      "outcome": "Cart has the mug with quantity 3.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "Cart line cedar-camp-mug has qty 3."
+      },
+      "paper_template": "Add the Cedar Camp Mug to the cart and change the quantity to 3.",
+      "objective": "curation"
+    },
+    "C056": {
+      "id": "C056",
+      "candidate": "C056",
+      "label": "Cart / state change",
+      "category": "State",
+      "ask": "Add the Cedar Camp Mug and the Watch Cap to the cart, then remove the Watch Cap.",
+      "start_path": "/store",
+      "capabilities": [
+        "cart"
+      ],
+      "read_write": "write",
+      "difficulty": 2,
+      "task_twin_group": "cart_edit",
+      "hint": "Remove the cap from the cart page. Leave the mug. Do not place an order.",
+      "constraints": {
+        "kind": "cart_exact",
+        "lines": [
+          {
+            "slug": "cedar-camp-mug"
+          }
+        ],
+        "absent": [
+          "watch-cap"
+        ],
+        "only": true
+      },
+      "outcome": "Cart contains only the mug.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "Cart slugs are exactly cedar-camp-mug."
+      },
+      "paper_template": "Add the Cedar Camp Mug and the Watch Cap to the cart, then remove the Watch Cap.",
+      "objective": "curation"
+    },
+    "C069": {
+      "id": "C069",
+      "candidate": "C069",
+      "label": "Wishlist",
+      "category": "State",
+      "ask": "Add the Finch Trail Pack 28L to the wishlist.",
+      "start_path": "/store",
+      "capabilities": [
+        "wishlist"
+      ],
+      "read_write": "write",
+      "difficulty": 1,
+      "task_twin_group": "wishlist",
+      "hint": "Use Add to wishlist on the product page. Do not add it to the cart.",
+      "constraints": {
+        "kind": "wishlist",
+        "slugs": [
+          "finch-trail-pack"
+        ]
+      },
+      "outcome": "wishlist contains finch-trail-pack.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "Wishlist items include finch-trail-pack."
+      },
+      "paper_template": "Add the Finch Trail Pack 28L to the wishlist.",
+      "objective": "curation"
+    },
+    "C071": {
+      "id": "C071",
+      "candidate": "C071",
+      "label": "Wishlist",
+      "category": "State",
+      "ask": "Add the Cedar Camp Mug and the Watch Cap to the wishlist, then remove the Watch Cap from the wishlist.",
+      "start_path": "/store",
+      "capabilities": [
+        "wishlist"
+      ],
+      "read_write": "write",
+      "difficulty": 2,
+      "task_twin_group": "wishlist",
+      "hint": "Remove the cap on the wishlist page. Leave the mug.",
+      "constraints": {
+        "kind": "wishlist",
+        "slugs": [
+          "cedar-camp-mug"
+        ],
+        "absent": [
+          "watch-cap"
+        ]
+      },
+      "outcome": "Wishlist has the mug and not the cap.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "Wishlist contains cedar-camp-mug and not watch-cap."
+      },
+      "paper_template": "Add the Cedar Camp Mug and the Watch Cap to the wishlist, then remove the Watch Cap from the wishlist.",
+      "objective": "curation"
+    },
+    "C": {
+      "id": "C",
+      "label": "Information Extraction",
+      "category": "Extract",
+      "ask": "Find the arrival time for load AB123.",
+      "paper_template": "Find the arrival time for load AB123.",
+      "start_path": "/directory",
+      "capabilities": [
+        "lookup",
+        "pagination"
+      ],
+      "read_write": "read",
+      "difficulty": 3,
+      "task_twin_group": "info_extract",
+      "constraints": {
+        "kind": "shipment_lookup",
+        "load": "AB123",
+        "tab": "inbound",
+        "page_size": 10
+      },
+      "outcome": "The agent reports the dock/arrival time of load AB123 from the Receiving board.",
+      "verification": {
+        "type": "self_report",
+        "source": "none",
+        "how": "No store write. Score agent_report.arrival_time (or dock_time) against the shipment resolved from the seed DB. page is generated metadata, not part of the ask."
+      },
+      "objective": "retrieval"
+    },
+    "C023": {
+      "id": "C023",
+      "candidate": "C023",
+      "label": "Information extraction",
+      "category": "Extract",
+      "ask": "Find the phone number for Elena Voss.",
+      "start_path": "/people",
+      "capabilities": [
+        "lookup"
+      ],
+      "read_write": "read",
+      "difficulty": 2,
+      "task_twin_group": "info_extract",
+      "hint": "Use the People directory. Do not open /api/people.",
+      "constraints": {
+        "kind": "report_value",
+        "person": "Elena Voss",
+        "phone": "503-555-0101"
+      },
+      "outcome": "The agent reports Elena Voss's phone number.",
+      "verification": {
+        "type": "self_report",
+        "source": "none",
+        "how": "Score agent_report.phone against 503-555-0101. No store write."
+      },
+      "paper_template": "Find the phone number for Elena Voss.",
+      "objective": "retrieval"
+    },
+    "C080": {
+      "id": "C080",
+      "candidate": "C080",
+      "label": "Multi-constraint lookup",
+      "category": "Extract",
+      "ask": "On the Receiving board, find the inbound load that originates in Chicago and is destined for Portland. Report its load id and arrival time.",
+      "start_path": "/directory",
+      "capabilities": [
+        "lookup"
+      ],
+      "read_write": "read",
+      "difficulty": 3,
+      "task_twin_group": "info_extract",
+      "hint": "Use the HTML Receiving board only. Do not open /api/shipments. The load id is not given in the instructions.",
+      "constraints": {
+        "kind": "report_lookup",
+        "origin": "Chicago",
+        "dest": "Portland"
+      },
+      "outcome": "The agent reports the unique Chicago-to-Portland inbound load and its arrival time.",
+      "verification": {
+        "type": "self_report",
+        "source": "none",
+        "how": "Score agent_report.load and arrival_time against the shipment with origin Chicago and dest Portland."
+      },
+      "paper_template": "On the Receiving board, find the inbound load that originates in Chicago and is destined for Portland. Report its load id and arrival time.",
+      "objective": "retrieval"
+    },
+    "C089": {
+      "id": "C089",
+      "candidate": "C089",
+      "label": "People directory",
+      "category": "Extract",
+      "ask": "Find the phone number of the staff member whose title is Night support.",
+      "start_path": "/people",
+      "capabilities": [
+        "lookup"
+      ],
+      "read_write": "read",
+      "difficulty": 2,
+      "task_twin_group": "people",
+      "hint": "Use the People directory. Do not open /api/people.",
+      "constraints": {
+        "kind": "report_value",
+        "title": "Night support",
+        "person": "Sam Okonkwo",
+        "phone": "503-555-0268"
+      },
+      "outcome": "The agent reports the Night support phone number.",
+      "verification": {
+        "type": "self_report",
+        "source": "none",
+        "how": "Score agent_report.phone against 503-555-0268. No store write."
+      },
+      "paper_template": "Find the phone number of the staff member whose title is Night support.",
+      "objective": "retrieval"
+    },
+    "C079": {
+      "id": "C079",
+      "label": "People directory",
+      "category": "Extract",
+      "ask": "Find the phone number associated with the staff email priya.shah@ridgeway.test.",
+      "start_path": "/people",
+      "read_write": "read",
+      "constraints": {
+        "kind": "report_value",
+        "person": "Priya Shah",
+        "phone": "503-555-0144"
+      },
+      "outcome": "The agent reports the phone number of the staff member with that email.",
+      "verification": {
+        "type": "self_report",
+        "source": "none",
+        "how": "Score agent_report.phone against 503-555-0144."
+      },
+      "hint": "Use the People directory UI.",
+      "candidate": "C079",
+      "objective": "retrieval"
+    },
+    "C094": {
+      "id": "C094",
+      "candidate": "C094",
+      "label": "Receiving",
+      "category": "Extract",
+      "ask": "How many loads are on the Held / delayed tab? Report the total count for that tab, not only the rows visible on the current page.",
+      "start_path": "/directory",
+      "capabilities": [
+        "lookup"
+      ],
+      "read_write": "read",
+      "difficulty": 2,
+      "task_twin_group": "receiving",
+      "hint": "Use the Held / delayed tab on the Receiving board. Do not open /api/shipments.",
+      "constraints": {
+        "kind": "report_value",
+        "count": 23,
+        "tab": "held"
+      },
+      "outcome": "The agent reports the total number of Held and Delayed loads.",
+      "verification": {
+        "type": "self_report",
+        "source": "none",
+        "how": "Score agent_report.count against 23, the Held / delayed tab total for seed 20260916."
+      },
+      "paper_template": "How many loads are on the Held / delayed tab? Report the total count for that tab, not only the rows visible on the current page.",
+      "objective": "enumeration"
+    },
+    "C078": {
+      "id": "C078",
+      "label": "Receiving",
+      "category": "Extract",
+      "ask": "How many inbound pages are there on the Receiving board at 10 rows per page? Report the number of pages.",
+      "start_path": "/directory",
+      "read_write": "read",
+      "constraints": {
+        "kind": "report_value",
+        "count": 8,
+        "tab": "inbound",
+        "page_size": 10
+      },
+      "outcome": "The agent reports the page count of the inbound tab.",
+      "verification": {
+        "type": "self_report",
+        "source": "none",
+        "how": "Score agent_report.count against 8 (80 inbound loads, 10 per page)."
+      },
+      "hint": "Use the Receiving board UI. Do not open /api/shipments.",
+      "candidate": "C078",
+      "objective": "enumeration"
+    },
+    "C033": {
+      "id": "C033",
+      "label": "Catalog counts",
+      "category": "Extract",
+      "ask": "How many catalog products are out of stock? Report the count.",
+      "start_path": "/store",
+      "read_write": "read",
+      "constraints": {
+        "kind": "report_value",
+        "count": 3
+      },
+      "outcome": "The agent reports how many products are out of stock.",
+      "verification": {
+        "type": "self_report",
+        "source": "none",
+        "how": "Score agent_report.count against the number of seed products with stock 0 (3)."
+      },
+      "hint": "Use the Shop UI. Do not call the JSON API.",
+      "candidate": "C033",
+      "objective": "enumeration"
+    },
+    "N01": {
+      "id": "N01",
+      "label": "Catalog counts",
+      "category": "Extract",
+      "ask": "How many products does the catalog list in the Kitchen category? Report the count.",
+      "start_path": "/store",
+      "read_write": "read",
+      "constraints": {
+        "kind": "report_value",
+        "count": 8,
+        "department": "Kitchen"
+      },
+      "outcome": "The agent reports the size of one catalog category.",
+      "verification": {
+        "type": "self_report",
+        "source": "none",
+        "how": "Score agent_report.count against the number of seed products in Kitchen (8)."
+      },
+      "hint": "Use the Shop UI. Check every page of the listing. Do not call the JSON API.",
+      "objective": "enumeration"
+    },
+    "N02": {
+      "id": "N02",
+      "label": "Catalog counts",
+      "category": "Extract",
+      "ask": "How many products does the catalog list in the Lighting category? Report the count.",
+      "start_path": "/store",
+      "read_write": "read",
+      "constraints": {
+        "kind": "report_value",
+        "count": 5,
+        "department": "Lighting"
+      },
+      "outcome": "The agent reports the size of one catalog category.",
+      "verification": {
+        "type": "self_report",
+        "source": "none",
+        "how": "Score agent_report.count against the number of seed products in Lighting (5)."
+      },
+      "hint": "Use the Shop UI. Check every page of the listing. Do not call the JSON API.",
+      "objective": "enumeration"
+    },
+    "E": {
+      "id": "E",
+      "label": "Conditional selection",
+      "category": "Conditional",
+      "ask": "Find a product that is currently out of stock and click Notify me.",
+      "paper_template": "Find a product that is currently out of stock and click notify me.",
+      "start_path": "/store",
+      "capabilities": [
+        "filter",
+        "conditional"
+      ],
+      "read_write": "write",
+      "difficulty": 2,
+      "task_twin_group": "oos_notify",
+      "constraints": {
+        "kind": "out_of_stock_any"
+      },
+      "outcome": "notifies[] contains one product whose stock is 0. Any matching product is valid.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "Global notifies[] has a slug that is out of stock in the catalog."
+      },
+      "objective": "availability"
+    },
+    "C047": {
+      "id": "C047",
+      "candidate": "C047",
+      "label": "Conditional / branching",
+      "category": "Conditional",
+      "ask": "Find the Alpine Sleeping Quilt. If it is out of stock, click Notify me and use email maya.chen@hearthline.test. If it is in stock, add it to the cart instead.",
+      "start_path": "/store",
+      "capabilities": [
+        "conditional"
+      ],
+      "read_write": "write",
+      "difficulty": 2,
+      "task_twin_group": "oos_notify",
+      "hint": "Use the Shop UI. Stop if the control you need is missing. Do not loop.",
+      "constraints": {
+        "kind": "notify_slug",
+        "slug": "alpine-sleeping-quilt"
+      },
+      "outcome": "The quilt is out of stock, so notifies[] contains alpine-sleeping-quilt.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "notifies[] has slug alpine-sleeping-quilt."
+      },
+      "paper_template": "Find the Alpine Sleeping Quilt. If it is out of stock, click Notify me and use email maya.chen@hearthline.test. If it is in stock, add it to the cart instead.",
+      "objective": "availability"
+    },
+    "C052": {
+      "id": "C052",
+      "label": "Conditional / branching",
+      "category": "Conditional",
+      "ask": "Find an out-of-stock Lighting product. If Notify me is available, click it and use email maya.chen@hearthline.test; otherwise stop.",
+      "start_path": "/store",
+      "read_write": "write",
+      "constraints": {
+        "kind": "notify_slug",
+        "slug": "opal-glass-sconce"
+      },
+      "outcome": "A notify record exists for the out-of-stock Lighting product.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "notifies[] has opal-glass-sconce, the only out-of-stock Lighting product."
+      },
+      "hint": "Use the Shop UI. Stop if the control you need is missing. Do not loop.",
+      "candidate": "C052",
+      "objective": "availability"
+    },
+    "N03": {
+      "id": "N03",
+      "label": "Conditional / branching",
+      "category": "Conditional",
+      "ask": "Find the out-of-stock product in the Camp category, click Notify me, and use email maya.chen@hearthline.test.",
+      "start_path": "/store",
+      "read_write": "write",
+      "constraints": {
+        "kind": "notify_slug",
+        "slug": "alpine-sleeping-quilt"
+      },
+      "outcome": "A notify record exists for the out-of-stock Camp product.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "notifies[] has alpine-sleeping-quilt, the only out-of-stock Camp product."
+      },
+      "hint": "Use the Shop UI. Stop if the control you need is missing. Do not loop.",
+      "objective": "availability"
+    },
+    "N04": {
+      "id": "N04",
+      "label": "Conditional / branching",
+      "category": "Conditional",
+      "ask": "Find the out-of-stock product in the Home category, click Notify me, and use email maya.chen@hearthline.test.",
+      "start_path": "/store",
+      "read_write": "write",
+      "constraints": {
+        "kind": "notify_slug",
+        "slug": "linen-duvet-cover"
+      },
+      "outcome": "A notify record exists for the out-of-stock Home product.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "notifies[] has linen-duvet-cover, the only out-of-stock Home product."
+      },
+      "hint": "Use the Shop UI. Stop if the control you need is missing. Do not loop.",
+      "objective": "availability"
+    },
+    "C021": {
+      "id": "C021",
+      "candidate": "C021",
+      "label": "Checkout",
+      "category": "State",
+      "ask": "Add the Cedar Camp Mug to the cart and check out with purchase order number PO-4419. Ship to Maya Chen, maya.chen@hearthline.test, phone 503-555-0142, 418 Division Street, Suite 4, Portland, Oregon 97214, United States. Choose Purchase order as the payment method. If a confirmation dialog appears, accept it.",
+      "start_path": "/store",
+      "capabilities": [
+        "cart",
+        "checkout"
+      ],
+      "read_write": "write",
+      "difficulty": 3,
+      "task_twin_group": "checkout",
+      "hint": "The site creates the order only after you accept the place-order dialog. Do not call the JSON API.",
+      "constraints": {
+        "kind": "order_items",
+        "slugs": [
+          "cedar-camp-mug"
+        ],
+        "payment_method": "po",
+        "cart_empty": true
+      },
+      "outcome": "orders[] has the mug paid by purchase order, and the cart is empty. The PO number itself is not stored.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "An order contains cedar-camp-mug and payment.method is po. The store does not persist poNumber."
+      },
+      "paper_template": "Add the Cedar Camp Mug to the cart and check out with purchase order number PO-4419. Ship to Maya Chen, maya.chen@hearthline.test, phone 503-555-0142, 418 Division Street, Suite 4, Portland, Oregon 97214, United States. Choose Purchase order as the payment method. If a confirmation dialog appears, accept it.",
+      "objective": "transaction"
+    },
+    "C063": {
+      "id": "C063",
+      "candidate": "C063",
+      "label": "Checkout",
+      "category": "State",
+      "ask": "Add the Field Notebook Set to the cart and complete checkout with a credit card. Ship to Maya Chen, maya.chen@hearthline.test, phone 503-555-0142, 418 Division Street, Suite 4, Portland, Oregon 97214, United States. Card name Maya Chen, number 4242 4242 4242 4242, expiry 12/28, CVV 123. If a confirmation dialog appears, accept it.",
+      "start_path": "/store",
+      "capabilities": [
+        "cart",
+        "checkout"
+      ],
+      "read_write": "write",
+      "difficulty": 3,
+      "task_twin_group": "checkout",
+      "hint": "The site creates the order only after you accept the place-order dialog. Do not call the JSON API.",
+      "constraints": {
+        "kind": "order_items",
+        "slugs": [
+          "field-notebook-set"
+        ],
+        "payment_method": "card",
+        "cart_empty": true
+      },
+      "outcome": "orders[] contains the notebook paid by card, and the cart is empty.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "An order contains field-notebook-set, payment.method is card, and no cart lines remain."
+      },
+      "paper_template": "Add the Field Notebook Set to the cart and complete checkout with a credit card. Ship to Maya Chen, maya.chen@hearthline.test, phone 503-555-0142, 418 Division Street, Suite 4, Portland, Oregon 97214, United States. Card name Maya Chen, number 4242 4242 4242 4242, expiry 12/28, CVV 123. If a confirmation dialog appears, accept it.",
+      "objective": "transaction"
+    },
+    "C065": {
+      "id": "C065",
+      "label": "Checkout",
+      "category": "State",
+      "ask": "Add the Cedar Camp Mug and the Watch Cap to the cart and place a single order for both with a credit card. Ship to Maya Chen, maya.chen@hearthline.test, phone 503-555-0142, 418 Division Street, Suite 4, Portland, Oregon 97214, United States. Card name Maya Chen, number 4242 4242 4242 4242, expiry 12/28, CVV 123. If a confirmation dialog appears, accept it.",
+      "start_path": "/store",
+      "read_write": "write",
+      "constraints": {
+        "kind": "order_items",
+        "slugs": [
+          "cedar-camp-mug",
+          "watch-cap"
+        ],
+        "payment_method": "card",
+        "cart_empty": true
+      },
+      "outcome": "orders[] has one order with both products, paid by card.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "One order contains both products, payment is card, and no cart lines remain."
+      },
+      "hint": "The site creates the order only after you accept the place-order dialog. Do not call the JSON API.",
+      "candidate": "C065",
+      "objective": "transaction"
+    },
+    "N05": {
+      "id": "N05",
+      "label": "Checkout",
+      "category": "State",
+      "ask": "Add the Trail Wool Socks (3-pack) to the cart and complete checkout with a credit card. Ship to Maya Chen, maya.chen@hearthline.test, phone 503-555-0142, 418 Division Street, Suite 4, Portland, Oregon 97214, United States. Card name Maya Chen, number 4242 4242 4242 4242, expiry 12/28, CVV 123. If a confirmation dialog appears, accept it.",
+      "start_path": "/store",
+      "read_write": "write",
+      "constraints": {
+        "kind": "order_items",
+        "slugs": [
+          "trail-wool-socks"
+        ],
+        "payment_method": "card",
+        "cart_empty": true
+      },
+      "outcome": "orders[] has the socks paid by card, and the cart is empty.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "An order contains trail-wool-socks, payment is card, and no cart lines remain."
+      },
+      "hint": "The site creates the order only after you accept the place-order dialog. Do not call the JSON API.",
+      "objective": "transaction"
+    },
+    "N06": {
+      "id": "N06",
+      "label": "Checkout",
+      "category": "State",
+      "ask": "Add the Stone Pour Kettle and the Oak End-Grain Board to the cart and check out as a single order with purchase order number PO-5521. Ship to Maya Chen, maya.chen@hearthline.test, phone 503-555-0142, 418 Division Street, Suite 4, Portland, Oregon 97214, United States. Choose Purchase order as the payment method. If a confirmation dialog appears, accept it.",
+      "start_path": "/store",
+      "read_write": "write",
+      "constraints": {
+        "kind": "order_items",
+        "slugs": [
+          "stone-pour-kettle",
+          "oak-cutting-board"
+        ],
+        "payment_method": "po",
+        "cart_empty": true
+      },
+      "outcome": "orders[] has one order with both products, paid by purchase order.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "One order contains both products, payment is po, and no cart lines remain."
+      },
+      "hint": "The site creates the order only after you accept the place-order dialog. Do not call the JSON API.",
+      "objective": "transaction"
+    },
+    "B": {
+      "id": "B",
+      "label": "Form Population",
+      "category": "Form",
+      "ask": "Complete the Register wizard using the provided persona details.",
+      "paper_template": "Complete the user registration wizard with specific given details.",
+      "start_path": "/register",
+      "site_module": "Four-step member registration wizard.",
+      "capabilities": [
+        "form",
+        "wizard"
+      ],
+      "read_write": "write",
+      "difficulty": 2,
+      "task_twin_group": "form_register",
+      "constraints": {
+        "kind": "member_create",
+        "member_id_prefix": "RW-M-",
+        "newsletter": false,
+        "sms": false
+      },
+      "checkpoint": {
+        "confirmation_step": 4,
+        "signal": "member id RW-M- visible after Create account"
+      },
+      "outcome": "members[] has Maya Chen with persona address/phone and an RW-M- id. Newsletter and SMS are false.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "members[] matches persona email, name, phone, address; id starts RW-M-; newsletter and sms are false."
+      },
+      "objective": "identity"
+    },
+    "C013": {
+      "id": "C013",
+      "candidate": "C013",
+      "label": "Form population",
+      "category": "Form",
+      "ask": "Register a new member with these values exactly: full name Jordan Hale, email jordan.hale@hearthline.test, password Trail#503 entered twice, phone 503-555-0166, street 22 Ash Street, no apartment, city Portland, country United States, state Oregon, postal code 97214. Leave newsletter and SMS off.",
+      "start_path": "/register",
+      "capabilities": [
+        "form",
+        "wizard"
+      ],
+      "read_write": "write",
+      "difficulty": 2,
+      "task_twin_group": "form_register",
+      "hint": "Use the Register wizard. Set the country before the state dropdown fills. Finish through Create account.",
+      "constraints": {
+        "kind": "member_create",
+        "member_id_prefix": "RW-M-",
+        "fullName": "Jordan Hale",
+        "email": "jordan.hale@hearthline.test",
+        "phone": "503-555-0166",
+        "line1": "22 Ash Street",
+        "line2": "",
+        "city": "Portland",
+        "country": "US",
+        "region": "OR",
+        "postal": "97214",
+        "newsletter": false,
+        "sms": false
+      },
+      "outcome": "members[] has Jordan Hale with those fields and an RW-M- id.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "members[] matches Jordan Hale's email, name, phone, address, and an id starting RW-M-."
+      },
+      "paper_template": "Register a new member with these values exactly: full name Jordan Hale, email jordan.hale@hearthline.test, password Trail#503 entered twice, phone 503-555-0166, street 22 Ash Street, no apartment, city Portland, country United States, state Oregon, postal code 97214. Leave newsletter and SMS off.",
+      "objective": "identity"
+    },
+    "C015": {
+      "id": "C015",
+      "candidate": "C015",
+      "label": "Form population",
+      "category": "Form",
+      "ask": "Register Maya Chen (email maya.chen@hearthline.test, password Trail#503 entered twice, phone 503-555-0142) with street 418 Division Street, apartment Suite 4, city Vancouver, country Canada, province British Columbia, postal code V6B 1A1. Leave newsletter and SMS off.",
+      "start_path": "/register",
+      "capabilities": [
+        "form",
+        "wizard"
+      ],
+      "read_write": "write",
+      "difficulty": 3,
+      "task_twin_group": "form_register",
+      "hint": "Set country to Canada before the province dropdown fills. Finish through Create account.",
+      "constraints": {
+        "kind": "member_create",
+        "member_id_prefix": "RW-M-",
+        "fullName": "Maya Chen",
+        "email": "maya.chen@hearthline.test",
+        "phone": "503-555-0142",
+        "line1": "418 Division Street",
+        "line2": "Suite 4",
+        "city": "Vancouver",
+        "country": "CA",
+        "region": "BC",
+        "postal": "V6B 1A1",
+        "newsletter": false,
+        "sms": false
+      },
+      "outcome": "members[] has Maya Chen with country CA, region BC, and postal V6B 1A1.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "Member email matches Maya and country/region/postal are CA, BC, V6B 1A1."
+      },
+      "paper_template": "Register Maya Chen (email maya.chen@hearthline.test, password Trail#503 entered twice, phone 503-555-0142) with street 418 Division Street, apartment Suite 4, city Vancouver, country Canada, province British Columbia, postal code V6B 1A1. Leave newsletter and SMS off.",
+      "objective": "identity"
+    },
+    "C096": {
+      "id": "C096",
+      "candidate": "C096",
+      "label": "Cross-page workflow",
+      "category": "Form",
+      "ask": "Complete registration with the persona below, then open Account and change the phone number to 503-555-0188. Save the account. Leave newsletter and SMS off.",
+      "start_path": "/register",
+      "capabilities": [
+        "form",
+        "wizard"
+      ],
+      "read_write": "write",
+      "difficulty": 3,
+      "task_twin_group": "cross_page",
+      "use_persona": true,
+      "hint": "After the member id appears, open Account, change only the phone, and save.",
+      "constraints": {
+        "kind": "member_create",
+        "fullName": "Maya Chen",
+        "email": "maya.chen@hearthline.test",
+        "phone": "503-555-0188",
+        "line1": "418 Division Street",
+        "line2": "Suite 4",
+        "city": "Portland",
+        "country": "US",
+        "region": "OR",
+        "postal": "97214",
+        "newsletter": false,
+        "sms": false,
+        "member_id_prefix": "RW-M-"
+      },
+      "outcome": "Maya's member record exists and her phone is 503-555-0188.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "members[] matches Maya's persona except phone is 503-555-0188."
+      },
+      "paper_template": "Complete registration with the persona below, then open Account and change the phone number to 503-555-0188. Save the account. Leave newsletter and SMS off.",
+      "objective": "identity"
+    },
+    "C014": {
+      "id": "C014",
+      "label": "Form population",
+      "category": "Form",
+      "ask": "Register Maya Chen (email maya.chen@hearthline.test, password Trail#503 entered twice, phone 503-555-0142) with street 418 Division Street, apartment Suite 4, city Portland, country United States, state Oregon, postal code 97214. Turn the newsletter on and leave SMS off.",
+      "start_path": "/register",
+      "read_write": "write",
+      "constraints": {
+        "kind": "member_create",
+        "member_id_prefix": "RW-M-",
+        "fullName": "Maya Chen",
+        "email": "maya.chen@hearthline.test",
+        "phone": "503-555-0142",
+        "line1": "418 Division Street",
+        "line2": "Suite 4",
+        "city": "Portland",
+        "country": "US",
+        "region": "OR",
+        "postal": "97214",
+        "newsletter": true,
+        "sms": false
+      },
+      "outcome": "A member record matches the persona with the newsletter on.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "members[] has Maya with newsletter true and sms false."
+      },
+      "hint": "Use the Register wizard. Set the country before the state dropdown fills. Finish through Create account.",
+      "candidate": "C014",
+      "objective": "identity"
+    },
+    "C016": {
+      "id": "C016",
+      "candidate": "C016",
+      "label": "Support tickets",
+      "category": "Form",
+      "ask": "File a support ticket with subject Damaged mug, description The mug arrived cracked, department Warehouse, priority high, name Maya Chen, email maya.chen@hearthline.test. Leave the order id blank.",
+      "start_path": "/support",
+      "capabilities": [
+        "form"
+      ],
+      "read_write": "write",
+      "difficulty": 2,
+      "task_twin_group": "support_ticket",
+      "hint": "Use the Support form. Description is required. Do not call the JSON API.",
+      "constraints": {
+        "kind": "tickets",
+        "tickets": [
+          {
+            "subject": "Damaged mug",
+            "department": "Warehouse",
+            "priority": "high",
+            "customerEmail": "maya.chen@hearthline.test"
+          }
+        ]
+      },
+      "outcome": "tickets[] has that subject, department, priority, and email.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "tickets[] contains subject Damaged mug, department Warehouse, priority high, and Maya's email."
+      },
+      "paper_template": "File a support ticket with subject Damaged mug, description The mug arrived cracked, department Warehouse, priority high, name Maya Chen, email maya.chen@hearthline.test. Leave the order id blank.",
+      "objective": "service"
+    },
+    "C017": {
+      "id": "C017",
+      "label": "Support tickets",
+      "category": "Form",
+      "ask": "File a support ticket with subject Duplicate charge, description I was charged twice for one order, department Billing, priority urgent, name Amina Test, email amina.test@hearthline.test. Leave the order id blank.",
+      "start_path": "/support",
+      "read_write": "write",
+      "constraints": {
+        "kind": "tickets",
+        "tickets": [
+          {
+            "subject": "Duplicate charge",
+            "department": "Billing",
+            "priority": "urgent",
+            "customerEmail": "amina.test@hearthline.test"
+          }
+        ]
+      },
+      "outcome": "A Billing ticket exists for the duplicate charge.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "tickets[] has that subject, department, priority, and email."
+      },
+      "hint": "Use the Support form. Description is required. Do not call the JSON API.",
+      "candidate": "C017",
+      "objective": "service"
+    },
+    "C081": {
+      "id": "C081",
+      "candidate": "C081",
+      "label": "Support tickets",
+      "category": "Form",
+      "ask": "File two support tickets. First: subject General question, description Question about store hours, department Support, priority low, name Maya Chen, email maya.chen@hearthline.test. Second: subject Late shipment, description A load is late, department Logistics, priority high, with the same name and email. Leave the order id blank on both.",
+      "start_path": "/support",
+      "capabilities": [
+        "form"
+      ],
+      "read_write": "write",
+      "difficulty": 3,
+      "task_twin_group": "support_ticket",
+      "hint": "Submit the form once for each ticket. Do not call the JSON API.",
+      "constraints": {
+        "kind": "tickets",
+        "tickets": [
+          {
+            "department": "Support",
+            "priority": "low"
+          },
+          {
+            "department": "Logistics",
+            "priority": "high"
+          }
+        ]
+      },
+      "outcome": "tickets[] has both a Support/low ticket and a Logistics/high ticket.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "tickets[] contains department Support with priority low, and department Logistics with priority high."
+      },
+      "paper_template": "File two support tickets. First: subject General question, description Question about store hours, department Support, priority low, name Maya Chen, email maya.chen@hearthline.test. Second: subject Late shipment, description A load is late, department Logistics, priority high, with the same name and email. Leave the order id blank on both.",
+      "objective": "service"
+    },
+    "C084": {
+      "id": "C084",
+      "label": "Support tickets",
+      "category": "Form",
+      "ask": "File a support ticket with subject Order question, description Where is my order, department Support, priority low, name Maya Chen, email maya.chen@hearthline.test, and order id RW-10001. Use that order id even if the form warns it does not exist.",
+      "start_path": "/support",
+      "read_write": "write",
+      "constraints": {
+        "kind": "tickets",
+        "tickets": [
+          {
+            "subject": "Order question",
+            "department": "Support",
+            "priority": "low",
+            "customerEmail": "maya.chen@hearthline.test",
+            "orderId": "RW-10001"
+          }
+        ]
+      },
+      "outcome": "A ticket exists that references order RW-10001.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "tickets[] has that subject, department, priority, email, and orderId RW-10001."
+      },
+      "hint": "Use the Support form. Description is required. Do not call the JSON API.",
+      "candidate": "C084",
+      "objective": "service"
+    },
+    "N07": {
+      "id": "N07",
+      "label": "Support tickets",
+      "category": "Form",
+      "ask": "File a support ticket with subject Store hours, description Question about store hours, department Support, priority low, name Maya Chen, email maya.chen@hearthline.test. Leave the order id blank.",
+      "start_path": "/support",
+      "read_write": "write",
+      "constraints": {
+        "kind": "tickets",
+        "tickets": [
+          {
+            "subject": "Store hours",
+            "department": "Support",
+            "priority": "low",
+            "customerEmail": "maya.chen@hearthline.test"
+          }
+        ]
+      },
+      "outcome": "A low-priority Support ticket exists for the store-hours question.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "tickets[] has that subject, department, priority, and email."
+      },
+      "hint": "Use the Support form. Description is required. Do not call the JSON API.",
+      "objective": "service"
+    },
+    "C082": {
+      "id": "C082",
+      "label": "Cross-page workflow",
+      "category": "Form",
+      "ask": "Register Maya Chen with the persona below, then file a support ticket as Maya Chen (maya.chen@hearthline.test) with subject Late inbound load, description My inbound load is late, department Logistics, priority high. Leave the order id blank.\n\nPersona (use these values exactly): full name Maya Chen, email maya.chen@hearthline.test, password Trail#503 entered twice, phone 503-555-0142, street 418 Division Street, apartment Suite 4, city Portland, country United States (value US), state Oregon (value OR), postal code 97214. Leave newsletter and SMS unchecked. Set country before the state dropdown fills.",
+      "start_path": "/register",
+      "read_write": "write",
+      "constraints": {
+        "kind": "composite",
+        "parts": [
+          {
+            "kind": "member_create",
+            "member_id_prefix": "RW-M-",
+            "fullName": "Maya Chen",
+            "email": "maya.chen@hearthline.test",
+            "phone": "503-555-0142",
+            "line1": "418 Division Street",
+            "line2": "Suite 4",
+            "city": "Portland",
+            "country": "US",
+            "region": "OR",
+            "postal": "97214",
+            "newsletter": false,
+            "sms": false
+          },
+          {
+            "kind": "tickets",
+            "tickets": [
+              {
+                "subject": "Late inbound load",
+                "department": "Logistics",
+                "priority": "high",
+                "customerEmail": "maya.chen@hearthline.test"
+              }
+            ]
+          }
+        ]
+      },
+      "outcome": "identity, then service request.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "A member record for Maya exists and a Logistics ticket was filed with her email."
+      },
+      "candidate": "C082",
+      "objective": "identity",
+      "objective_sequence": [
+        "identity",
+        "service"
+      ]
+    },
+    "C095": {
+      "id": "C095",
+      "label": "Cross-page workflow",
+      "category": "Form",
+      "ask": "Register Maya Chen with the persona below, add the Cedar Camp Mug to the cart, complete checkout with a credit card, then file a support ticket as Maya Chen (maya.chen@hearthline.test) with subject Order follow-up, description Question about my new order, department Support, priority low, and the id of the order you just placed as the order id. Ship to Maya Chen, maya.chen@hearthline.test, phone 503-555-0142, 418 Division Street, Suite 4, Portland, Oregon 97214, United States. Card name Maya Chen, number 4242 4242 4242 4242, expiry 12/28, CVV 123. If a confirmation dialog appears, accept it.\n\nPersona (use these values exactly): full name Maya Chen, email maya.chen@hearthline.test, password Trail#503 entered twice, phone 503-555-0142, street 418 Division Street, apartment Suite 4, city Portland, country United States (value US), state Oregon (value OR), postal code 97214. Leave newsletter and SMS unchecked. Set country before the state dropdown fills.",
+      "start_path": "/register",
+      "read_write": "write",
+      "constraints": {
+        "kind": "composite",
+        "parts": [
+          {
+            "kind": "member_create",
+            "member_id_prefix": "RW-M-",
+            "fullName": "Maya Chen",
+            "email": "maya.chen@hearthline.test",
+            "phone": "503-555-0142",
+            "line1": "418 Division Street",
+            "line2": "Suite 4",
+            "city": "Portland",
+            "country": "US",
+            "region": "OR",
+            "postal": "97214",
+            "newsletter": false,
+            "sms": false
+          },
+          {
+            "kind": "order_items",
+            "slugs": [
+              "cedar-camp-mug"
+            ],
+            "payment_method": "card",
+            "cart_empty": true
+          },
+          {
+            "kind": "tickets",
+            "tickets": [
+              {
+                "subject": "Order follow-up",
+                "department": "Support",
+                "priority": "low",
+                "customerEmail": "maya.chen@hearthline.test",
+                "orderIdFromOrder": true
+              }
+            ]
+          }
+        ]
+      },
+      "outcome": "identity, then transaction, then service request.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "A member, an order for the mug, and a ticket whose orderId is that order's id all exist."
+      },
+      "hint": "The site creates the order only after you accept the place-order dialog. Do not call the JSON API.",
+      "candidate": "C095",
+      "objective": "identity",
+      "objective_sequence": [
+        "identity",
+        "transaction",
+        "service"
+      ]
+    },
+    "C097": {
+      "id": "C097",
+      "label": "Cross-page workflow",
+      "category": "Form",
+      "ask": "Find the phone number of Elena Voss in the People directory, then file a support ticket with subject Warehouse contact, department Warehouse, priority low, name Maya Chen, email maya.chen@hearthline.test, and a description that includes Elena Voss's phone number. Leave the order id blank.",
+      "start_path": "/people",
+      "read_write": "write",
+      "constraints": {
+        "kind": "composite",
+        "parts": [
+          {
+            "kind": "tickets",
+            "tickets": [
+              {
+                "subject": "Warehouse contact",
+                "department": "Warehouse",
+                "priority": "low",
+                "customerEmail": "maya.chen@hearthline.test",
+                "textContainsDigits": "503-555-0101"
+              }
+            ]
+          }
+        ]
+      },
+      "outcome": "retrieval, then service request.",
+      "verification": {
+        "type": "state",
+        "source": "experiment_state",
+        "how": "A Warehouse ticket exists whose text contains Elena Voss's phone number (503-555-0101)."
+      },
+      "hint": "Use the People directory and the Support form. Do not call the JSON API.",
+      "candidate": "C097",
+      "objective": "retrieval",
+      "objective_sequence": [
+        "retrieval",
+        "service"
+      ]
+    }
+  },
+  "objectives": [
+    "discovery",
+    "curation",
+    "retrieval",
+    "enumeration",
+    "availability",
+    "transaction",
+    "identity",
+    "service"
+  ]
+}

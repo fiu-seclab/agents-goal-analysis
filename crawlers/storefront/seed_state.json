@@ -1,0 +1,53 @@
+{
+  "seed": 20260916,
+  "note": "Slim copy of the Ridgeway seed catalog for resolving expected when the live snapshot has no products/shipments. Snapshot wins when present.",
+  "products": [
+    {"slug": "cedar-camp-mug", "name": "Cedar Camp Mug", "category": "Kitchen", "price": 28, "stock": 42, "rating": 4.6, "colors": ["Umber", "Slate", "Pine"]},
+    {"slug": "finch-trail-pack", "name": "Finch Trail Pack 28L", "category": "Camp", "price": 149, "stock": 18, "rating": 4.8, "colors": ["Forest", "Clay"]},
+    {"slug": "hearth-wool-throw", "name": "Hearth Wool Throw", "category": "Home", "price": 96, "stock": 24, "rating": 4.7, "colors": ["Oat", "Charcoal", "Rust"]},
+    {"slug": "northline-hatchet", "name": "Northline Field Hatchet", "category": "Tools", "price": 78, "stock": 15, "rating": 4.5, "colors": ["Hickory"]},
+    {"slug": "lantern-no-4", "name": "Lantern No. 4", "category": "Lighting", "price": 64, "stock": 31, "rating": 4.9, "colors": ["Brass", "Black"]},
+    {"slug": "ridge-flannel-shirt", "name": "Ridge Flannel Shirt", "category": "Apparel", "price": 88, "stock": 27, "rating": 4.4, "colors": ["Plaid Pine", "Plaid Rust"]},
+    {"slug": "stone-pour-kettle", "name": "Stone Pour Kettle", "category": "Kitchen", "price": 54, "stock": 19, "rating": 4.6, "colors": ["Matte Black", "Clay"]},
+    {"slug": "canvas-duffel-50", "name": "Canvas Duffel 50L", "category": "Camp", "price": 132, "stock": 12, "rating": 4.3, "colors": ["Sand", "Olive"]},
+    {"slug": "oak-cutting-board", "name": "Oak End-Grain Board", "category": "Kitchen", "price": 72, "stock": 21, "rating": 4.8, "colors": ["Natural Oak"]},
+    {"slug": "field-notebook-set", "name": "Field Notebook Set", "category": "Home", "price": 18, "stock": 80, "rating": 4.2, "colors": ["Kraft", "Navy"]},
+    {"slug": "storm-shell-jacket", "name": "Storm Shell Jacket", "category": "Apparel", "price": 189, "stock": 9, "rating": 4.7, "colors": ["Spruce", "Fog"]},
+    {"slug": "ember-cast-skillet", "name": "Ember Cast Skillet 10\"", "category": "Kitchen", "price": 62, "stock": 16, "rating": 4.9, "colors": ["Bare Iron"]},
+    {"slug": "trail-wool-socks", "name": "Trail Wool Socks (3-pack)", "category": "Apparel", "price": 34, "stock": 55, "rating": 4.5, "colors": ["Heather", "Forest"]},
+    {"slug": "folding-saw", "name": "Folding Pruning Saw", "category": "Tools", "price": 36, "stock": 28, "rating": 4.4, "colors": ["Orange", "Olive"]},
+    {"slug": "desk-task-lamp", "name": "Desk Task Lamp", "category": "Lighting", "price": 84, "stock": 14, "rating": 4.6, "colors": ["Brass", "Oxide"]},
+    {"slug": "linen-apron", "name": "Linen Studio Apron", "category": "Kitchen", "price": 48, "stock": 22, "rating": 4.3, "colors": ["Natural", "Ink"]},
+    {"slug": "cedar-incense-set", "name": "Cedar Incense Set", "category": "Home", "price": 22, "stock": 40, "rating": 4.1, "colors": ["Cedar"]},
+    {"slug": "alpine-sleeping-quilt", "name": "Alpine Sleeping Quilt", "category": "Camp", "price": 219, "stock": 0, "rating": 4.8, "colors": ["Clay", "Night"]},
+    {"slug": "forge-utility-knife", "name": "Forge Utility Knife", "category": "Tools", "price": 58, "stock": 20, "rating": 4.7, "colors": ["Walnut"]},
+    {"slug": "porch-string-lights", "name": "Porch String Lights 40ft", "category": "Lighting", "price": 46, "stock": 33, "rating": 4.2, "colors": ["Warm"]},
+    {"slug": "river-chino-pants", "name": "River Chino Pants", "category": "Apparel", "price": 92, "stock": 17, "rating": 4.4, "colors": ["Khaki", "Olive", "Navy"]},
+    {"slug": "camp-coffee-mill", "name": "Camp Coffee Mill", "category": "Kitchen", "price": 41, "stock": 26, "rating": 4.5, "colors": ["Steel"]},
+    {"slug": "tin-candle-trio", "name": "Tin Candle Trio", "category": "Home", "price": 32, "stock": 38, "rating": 4.0, "colors": ["Mixed"]},
+    {"slug": "ridge-trekking-poles", "name": "Ridge Trekking Poles", "category": "Camp", "price": 79, "stock": 13, "rating": 4.6, "colors": ["Graphite"]},
+    {"slug": "workshop-clamp-set", "name": "Workshop Clamp Set", "category": "Tools", "price": 29, "stock": 44, "rating": 4.3, "colors": ["Red"]},
+    {"slug": "opal-glass-sconce", "name": "Opal Glass Sconce", "category": "Lighting", "price": 118, "stock": 0, "rating": 4.7, "colors": ["Milk Glass"]},
+    {"slug": "watch-cap", "name": "Watch Cap", "category": "Apparel", "price": 26, "stock": 60, "rating": 4.5, "colors": ["Navy", "Oat", "Black"]},
+    {"slug": "enamel-plate-set", "name": "Enamel Plate Set", "category": "Kitchen", "price": 38, "stock": 29, "rating": 4.4, "colors": ["Cream", "Sage"]},
+    {"slug": "linen-duvet-cover", "name": "Linen Duvet Cover", "category": "Home", "price": 168, "stock": 0, "rating": 4.8, "colors": ["Flax", "Smoke"]},
+    {"slug": "ultralight-stove", "name": "Ultralight Canister Stove", "category": "Camp", "price": 52, "stock": 23, "rating": 4.6, "colors": ["Titanium"]},
+    {"slug": "marking-gauge", "name": "Brass Marking Gauge", "category": "Tools", "price": 44, "stock": 16, "rating": 4.9, "colors": ["Brass"]},
+    {"slug": "paper-shade-pendant", "name": "Paper Shade Pendant", "category": "Lighting", "price": 74, "stock": 18, "rating": 4.3, "colors": ["Ivory"]},
+    {"slug": "chore-coat", "name": "Waxed Chore Coat", "category": "Apparel", "price": 198, "stock": 6, "rating": 4.8, "colors": ["Tan", "Brown"]},
+    {"slug": "spice-tin-rack", "name": "Spice Tin Rack", "category": "Kitchen", "price": 39, "stock": 25, "rating": 4.2, "colors": ["Steel"]},
+    {"slug": "hearth-doormat", "name": "Hearth Coir Doormat", "category": "Home", "price": 36, "stock": 30, "rating": 4.1, "colors": ["Natural"]},
+    {"slug": "map-case-pouch", "name": "Map Case Pouch", "category": "Camp", "price": 24, "stock": 47, "rating": 4.0, "colors": ["Clear / Olive"]},
+    {"slug": "black-trail-jacket", "name": "Black Trail Jacket", "category": "Apparel", "price": 89, "stock": 14, "rating": 4.6, "colors": ["Black", "Spruce", "Fog"], "sku": "RW-A-061"}
+  ],
+  "shipments": [
+    {
+      "load": "AB123",
+      "id": "sab123",
+      "origin": "Chicago",
+      "dest": "Portland",
+      "arrive": "16:20",
+      "inbound_index": 22
+    }
+  ]
+}

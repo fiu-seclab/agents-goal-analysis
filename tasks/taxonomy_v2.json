@@ -1,0 +1,2106 @@
+{
+ "status": "WORKING LABELS. Source: annotator A (one annotator so far). Not yet read by any pipeline.",
+ "source": "tasks/annotation/annotation_A.csv, labeled from task definitions only",
+ "goals": {
+  "discovery": {
+   "level1": "informational",
+   "definition": "Locate a specific record or item that matches stated criteria."
+  },
+  "retrieval": {
+   "level1": "informational",
+   "definition": "Obtain a specific value from a known or located record."
+  },
+  "enumeration": {
+   "level1": "informational",
+   "definition": "Obtain a count, list or ordering over a set of records."
+  },
+  "curation": {
+   "level1": "transactional",
+   "definition": "Change attributes of an existing record, or add to or remove from the user's own working set (cart, wishlist)."
+  },
+  "availability": {
+   "level1": "transactional",
+   "definition": "Set up a notification, watch or subscription so the user is told when something changes."
+  },
+  "service": {
+   "level1": "transactional",
+   "definition": "Submit a new request, ticket, issue, comment or pull request for others to act on."
+  },
+  "identity": {
+   "level1": "transactional",
+   "definition": "Create an account or change the attributes or access of an account (contact data, credentials, login permission)."
+  },
+  "transaction": {
+   "level1": "transactional",
+   "definition": "Complete a consequential commitment that is costly or impossible to undo: place an order, merge a change, publish a release, delete a resource."
+  }
+ },
+ "decision_rules": [
+  "Label the TERMINAL goal. A find step that only reaches the target is instrumental, not a goal.",
+  "A first step is a separate goal only when its result is reported or used in the next step; then the task is a composite and carries an ordered goal_sequence.",
+  "Labels come from the task definition (ask and verification), never from traces.",
+  "Pre-authentication state is not a labeling factor."
+ ],
+ "tier_rule": {
+  "critical": "Terminal step changes an account's authentication-affecting attributes or access (email, phone, credentials, login permission, creating an account that gets access: ASVS 7.5.1), or is a highly sensitive transaction (ASVS 7.5.3).",
+  "elevated": "Harm grows with volume (requests or content submitted for others to act on), or the task reads personal data.",
+  "standard": "Reversible change to an existing record, preference or the user's own working set; reads that return no personal data. A change to a non-authentication attribute (for example a full name) is standard.",
+  "note": "Tier is assigned per task. It is not a function of goal and site alone: retrieval splits by whether personal data is returned, and identity splits by which attribute changes."
+ },
+ "open": [
+  "segment_tiers for composites are not annotated",
+  "annotator B not yet available; agreement reported so far is annotator A against the author's draft (goal kappa 0.97, tier kappa 0.63, tier disagreement driven by the read rule)"
+ ],
+ "tasks": {
+  "gitea:GT18": {
+   "site": "gitea",
+   "family": "gitea:edit_record_field",
+   "verification": "state",
+   "old_objective": "curation",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "gitea:edit_record_field"
+  },
+  "servicenow:SN26": {
+   "site": "servicenow",
+   "family": "servicenow:create_user",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 2,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "identity",
+   "goal5": "identity",
+   "goal5_sequence": [
+    "identity"
+   ],
+   "family_v2": "servicenow:create_user"
+  },
+  "ridgeway:C052": {
+   "site": "ridgeway",
+   "family": "ridgeway:notify_me",
+   "verification": "state",
+   "old_objective": "availability",
+   "n_sessions_scored": 0,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "availability",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "ridgeway:notify_me"
+  },
+  "gitea:GT31": {
+   "site": "gitea",
+   "family": "gitea:merge_pull_request",
+   "verification": "state",
+   "old_objective": "transaction",
+   "n_sessions_scored": 1,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "transaction",
+   "goal5": "transaction",
+   "goal5_sequence": [
+    "transaction"
+   ],
+   "family_v2": "gitea:merge_pull_request"
+  },
+  "servicenow:SN11": {
+   "site": "servicenow",
+   "family": "servicenow:count_records",
+   "verification": "self_report",
+   "old_objective": "enumeration",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "enumeration",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "servicenow:count_records"
+  },
+  "servicenow:SN24": {
+   "site": "servicenow",
+   "family": "servicenow:order_catalog_item",
+   "verification": "state",
+   "old_objective": "transaction",
+   "n_sessions_scored": 2,
+   "tier": "critical",
+   "confidence": 2,
+   "notes": "catalog order; could be service (request for others to act on). chose transaction since it commits an order",
+   "goal": "transaction",
+   "goal5": "transaction",
+   "goal5_sequence": [
+    "transaction"
+   ],
+   "family_v2": "servicenow:order_catalog_item"
+  },
+  "ridgeway:N01": {
+   "site": "ridgeway",
+   "family": "ridgeway:catalog_count",
+   "verification": "self_report",
+   "old_objective": "enumeration",
+   "n_sessions_scored": 0,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "enumeration",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "ridgeway:catalog_count"
+  },
+  "servicenow:SN23": {
+   "site": "servicenow",
+   "family": "servicenow:order_catalog_item",
+   "verification": "state",
+   "old_objective": "transaction",
+   "n_sessions_scored": 2,
+   "tier": "critical",
+   "confidence": 2,
+   "notes": "catalog order; could be service (request for others to act on). chose transaction since it commits an order",
+   "goal": "transaction",
+   "goal5": "transaction",
+   "goal5_sequence": [
+    "transaction"
+   ],
+   "family_v2": "servicenow:order_catalog_item"
+  },
+  "ridgeway:C084": {
+   "site": "ridgeway",
+   "family": "ridgeway:support_ticket",
+   "verification": "state",
+   "old_objective": "service",
+   "n_sessions_scored": 0,
+   "tier": "elevated",
+   "confidence": 3,
+   "notes": null,
+   "goal": "service",
+   "goal5": "create",
+   "goal5_sequence": [
+    "create"
+   ],
+   "family_v2": "ridgeway:support_ticket"
+  },
+  "servicenow:SN04": {
+   "site": "servicenow",
+   "family": "servicenow:find_user_by_attribute",
+   "verification": "self_report",
+   "old_objective": "discovery",
+   "n_sessions_scored": 3,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": "report the identifier of the record that matches the criteria",
+   "goal": "discovery",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "servicenow:find_user_by_attribute"
+  },
+  "gitea:GT11": {
+   "site": "gitea",
+   "family": "gitea:count_records",
+   "verification": "self_report",
+   "old_objective": "enumeration",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "enumeration",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "gitea:count_records"
+  },
+  "ridgeway:C013": {
+   "site": "ridgeway",
+   "family": "ridgeway:register",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 2,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "identity",
+   "goal5": "identity",
+   "goal5_sequence": [
+    "identity"
+   ],
+   "family_v2": "ridgeway:register"
+  },
+  "servicenow:SN36": {
+   "site": "servicenow",
+   "family": "composite:discovery->curation",
+   "verification": "state",
+   "old_objective": "discovery",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": "find step is only a means to the update",
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "composite:discovery->curation"
+  },
+  "servicenow:SN22": {
+   "site": "servicenow",
+   "family": "servicenow:order_catalog_item",
+   "verification": "state",
+   "old_objective": "transaction",
+   "n_sessions_scored": 2,
+   "tier": "critical",
+   "confidence": 2,
+   "notes": "catalog order; could be service (request for others to act on). chose transaction since it commits an order",
+   "goal": "transaction",
+   "goal5": "transaction",
+   "goal5_sequence": [
+    "transaction"
+   ],
+   "family_v2": "servicenow:order_catalog_item"
+  },
+  "gitea:GT25": {
+   "site": "gitea",
+   "family": "gitea:open_pull_request",
+   "verification": "state",
+   "old_objective": "service",
+   "n_sessions_scored": 1,
+   "tier": "elevated",
+   "confidence": 3,
+   "notes": null,
+   "goal": "service",
+   "goal5": "create",
+   "goal5_sequence": [
+    "create"
+   ],
+   "family_v2": "gitea:open_issue_assigned"
+  },
+  "ridgeway:C033": {
+   "site": "ridgeway",
+   "family": "ridgeway:catalog_count",
+   "verification": "self_report",
+   "old_objective": "enumeration",
+   "n_sessions_scored": 0,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "enumeration",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "ridgeway:catalog_count"
+  },
+  "servicenow:SN07": {
+   "site": "servicenow",
+   "family": "servicenow:read_user_contact",
+   "verification": "self_report",
+   "old_objective": "retrieval",
+   "n_sessions_scored": 3,
+   "tier": "elevated",
+   "confidence": 2,
+   "notes": "personal data (email/phone) read; chose elevated",
+   "goal": "retrieval",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "servicenow:read_user_contact"
+  },
+  "ridgeway:C097": {
+   "site": "ridgeway",
+   "family": "composite:retrieval->service",
+   "verification": "state",
+   "old_objective": "retrieval",
+   "n_sessions_scored": 0,
+   "tier": "elevated",
+   "confidence": 2,
+   "notes": "looks up a phone number then puts it in a ticket (personal data released into a submission)",
+   "goal": null,
+   "goal_sequence": [
+    "retrieval",
+    "service"
+   ],
+   "segment_tiers": null,
+   "goal5": null,
+   "goal5_sequence": [
+    "read",
+    "create"
+   ],
+   "family_v2": "composite:retrieval->service"
+  },
+  "ridgeway:C089": {
+   "site": "ridgeway",
+   "family": "ridgeway:directory_lookup",
+   "verification": "self_report",
+   "old_objective": "retrieval",
+   "n_sessions_scored": 2,
+   "tier": "elevated",
+   "confidence": 2,
+   "notes": "staff phone number is personal data; find step is only a means; chose elevated",
+   "goal": "retrieval",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "ridgeway:directory_lookup"
+  },
+  "gitea:GT36": {
+   "site": "gitea",
+   "family": "gitea:watch_repository",
+   "verification": "state",
+   "old_objective": "availability",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "availability",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "gitea:watch_repository"
+  },
+  "gitea:GT06": {
+   "site": "gitea",
+   "family": "gitea:read_field_value",
+   "verification": "self_report",
+   "old_objective": "retrieval",
+   "n_sessions_scored": 1,
+   "tier": "elevated",
+   "confidence": 2,
+   "notes": "locker/access code is a secret-like value; chose elevated",
+   "goal": "retrieval",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "gitea:read_field_value"
+  },
+  "servicenow:SN32": {
+   "site": "servicenow",
+   "family": "servicenow:raise_incident",
+   "verification": "state",
+   "old_objective": "service",
+   "n_sessions_scored": 2,
+   "tier": "elevated",
+   "confidence": 3,
+   "notes": null,
+   "goal": "service",
+   "goal5": "create",
+   "goal5_sequence": [
+    "create"
+   ],
+   "family_v2": "servicenow:create_incident_a"
+  },
+  "servicenow:SN19": {
+   "site": "servicenow",
+   "family": "servicenow:edit_record_field",
+   "verification": "state",
+   "old_objective": "curation",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "servicenow:edit_problem_change"
+  },
+  "servicenow:SN20": {
+   "site": "servicenow",
+   "family": "servicenow:change_record_state",
+   "verification": "state",
+   "old_objective": "curation",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "servicenow:edit_incident"
+  },
+  "ridgeway:C094": {
+   "site": "ridgeway",
+   "family": "ridgeway:board_count",
+   "verification": "self_report",
+   "old_objective": "enumeration",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "enumeration",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "ridgeway:board_count"
+  },
+  "gitea:GT33": {
+   "site": "gitea",
+   "family": "gitea:merge_pull_request",
+   "verification": "state",
+   "old_objective": "transaction",
+   "n_sessions_scored": 1,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "transaction",
+   "goal5": "transaction",
+   "goal5_sequence": [
+    "transaction"
+   ],
+   "family_v2": "gitea:merge_pull_request"
+  },
+  "servicenow:SN33": {
+   "site": "servicenow",
+   "family": "servicenow:raise_incident",
+   "verification": "state",
+   "old_objective": "service",
+   "n_sessions_scored": 2,
+   "tier": "elevated",
+   "confidence": 3,
+   "notes": null,
+   "goal": "service",
+   "goal5": "create",
+   "goal5_sequence": [
+    "create"
+   ],
+   "family_v2": "servicenow:create_incident_b"
+  },
+  "ridgeway:C056": {
+   "site": "ridgeway",
+   "family": "ridgeway:add_to_cart_variants",
+   "verification": "state",
+   "old_objective": "curation",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": "add then remove from working set",
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "ridgeway:add_to_cart_variants"
+  },
+  "servicenow:SN05": {
+   "site": "servicenow",
+   "family": "servicenow:find_extreme_in_set",
+   "verification": "self_report",
+   "old_objective": "discovery",
+   "n_sessions_scored": 3,
+   "tier": "standard",
+   "confidence": 2,
+   "notes": "pick the record with highest urgency among a set; could be enumeration (ordering)",
+   "goal": "discovery",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "servicenow:find_extreme_in_set"
+  },
+  "servicenow:SN06": {
+   "site": "servicenow",
+   "family": "servicenow:read_field_value",
+   "verification": "self_report",
+   "old_objective": "retrieval",
+   "n_sessions_scored": 3,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "retrieval",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "servicenow:read_field_value"
+  },
+  "gitea:GT19": {
+   "site": "gitea",
+   "family": "gitea:change_record_state",
+   "verification": "state",
+   "old_objective": "curation",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "gitea:change_record_state"
+  },
+  "gitea:GT42": {
+   "site": "gitea",
+   "family": "composite:identity->service",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 1,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": null,
+   "goal_sequence": [
+    "identity",
+    "service"
+   ],
+   "segment_tiers": null,
+   "goal5": null,
+   "goal5_sequence": [
+    "identity",
+    "create"
+   ],
+   "family_v2": "composite:identity->service"
+  },
+  "ridgeway:C014": {
+   "site": "ridgeway",
+   "family": "ridgeway:register",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 0,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "identity",
+   "goal5": "identity",
+   "goal5_sequence": [
+    "identity"
+   ],
+   "family_v2": "ridgeway:register"
+  },
+  "ridgeway:C015": {
+   "site": "ridgeway",
+   "family": "ridgeway:register",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 2,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "identity",
+   "goal5": "identity",
+   "goal5_sequence": [
+    "identity"
+   ],
+   "family_v2": "ridgeway:register"
+  },
+  "ridgeway:C017": {
+   "site": "ridgeway",
+   "family": "ridgeway:support_ticket",
+   "verification": "state",
+   "old_objective": "service",
+   "n_sessions_scored": 0,
+   "tier": "elevated",
+   "confidence": 3,
+   "notes": null,
+   "goal": "service",
+   "goal5": "create",
+   "goal5_sequence": [
+    "create"
+   ],
+   "family_v2": "ridgeway:support_ticket"
+  },
+  "ridgeway:N04": {
+   "site": "ridgeway",
+   "family": "ridgeway:notify_me",
+   "verification": "state",
+   "old_objective": "availability",
+   "n_sessions_scored": 0,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "availability",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "ridgeway:notify_me"
+  },
+  "gitea:GT07": {
+   "site": "gitea",
+   "family": "gitea:read_field_value",
+   "verification": "self_report",
+   "old_objective": "retrieval",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "retrieval",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "gitea:read_field_value"
+  },
+  "servicenow:SN12": {
+   "site": "servicenow",
+   "family": "servicenow:count_records",
+   "verification": "self_report",
+   "old_objective": "enumeration",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "enumeration",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "servicenow:count_records"
+  },
+  "ridgeway:N07": {
+   "site": "ridgeway",
+   "family": "ridgeway:support_ticket",
+   "verification": "state",
+   "old_objective": "service",
+   "n_sessions_scored": 0,
+   "tier": "elevated",
+   "confidence": 3,
+   "notes": null,
+   "goal": "service",
+   "goal5": "create",
+   "goal5_sequence": [
+    "create"
+   ],
+   "family_v2": "ridgeway:support_ticket"
+  },
+  "servicenow:SN38": {
+   "site": "servicenow",
+   "family": "composite:enumeration->service",
+   "verification": "state",
+   "old_objective": "enumeration",
+   "n_sessions_scored": 1,
+   "tier": "elevated",
+   "confidence": 3,
+   "notes": "count then file a record containing it",
+   "goal": null,
+   "goal_sequence": [
+    "enumeration",
+    "service"
+   ],
+   "segment_tiers": null,
+   "goal5": null,
+   "goal5_sequence": [
+    "read",
+    "create"
+   ],
+   "family_v2": "composite:enumeration->service"
+  },
+  "gitea:GT13": {
+   "site": "gitea",
+   "family": "gitea:count_records",
+   "verification": "self_report",
+   "old_objective": "enumeration",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "enumeration",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "gitea:count_records"
+  },
+  "ridgeway:C063": {
+   "site": "ridgeway",
+   "family": "ridgeway:checkout",
+   "verification": "state",
+   "old_objective": "transaction",
+   "n_sessions_scored": 2,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": "checkout; cart steps are part of placing the order",
+   "goal": "transaction",
+   "goal5": "transaction",
+   "goal5_sequence": [
+    "transaction"
+   ],
+   "family_v2": "ridgeway:checkout"
+  },
+  "gitea:GT28": {
+   "site": "gitea",
+   "family": "gitea:edit_user_contact",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 1,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "identity",
+   "goal5": "identity",
+   "goal5_sequence": [
+    "identity"
+   ],
+   "family_v2": "gitea:edit_user_contact"
+  },
+  "gitea:GT02": {
+   "site": "gitea",
+   "family": "gitea:find_by_text_or_label",
+   "verification": "self_report",
+   "old_objective": "discovery",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": "report the identifier of the record that matches the criteria",
+   "goal": "discovery",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "gitea:find_by_text_or_label"
+  },
+  "ridgeway:B": {
+   "site": "ridgeway",
+   "family": "ridgeway:register",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 2,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "identity",
+   "goal5": "identity",
+   "goal5_sequence": [
+    "identity"
+   ],
+   "family_v2": "ridgeway:register"
+  },
+  "servicenow:SN03": {
+   "site": "servicenow",
+   "family": "servicenow:find_by_description",
+   "verification": "self_report",
+   "old_objective": "discovery",
+   "n_sessions_scored": 3,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": "report the identifier of the record that matches the criteria",
+   "goal": "discovery",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "servicenow:find_by_description"
+  },
+  "ridgeway:C011": {
+   "site": "ridgeway",
+   "family": "ridgeway:find_then_add_to_cart",
+   "verification": "state",
+   "old_objective": "discovery",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "ridgeway:find_then_add_to_cart"
+  },
+  "servicenow:SN18": {
+   "site": "servicenow",
+   "family": "servicenow:edit_record_field",
+   "verification": "state",
+   "old_objective": "curation",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "servicenow:edit_problem_change"
+  },
+  "ridgeway:C065": {
+   "site": "ridgeway",
+   "family": "ridgeway:checkout",
+   "verification": "state",
+   "old_objective": "transaction",
+   "n_sessions_scored": 0,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": "checkout; cart steps are part of placing the order",
+   "goal": "transaction",
+   "goal5": "transaction",
+   "goal5_sequence": [
+    "transaction"
+   ],
+   "family_v2": "ridgeway:checkout"
+  },
+  "ridgeway:N03": {
+   "site": "ridgeway",
+   "family": "ridgeway:notify_me",
+   "verification": "state",
+   "old_objective": "availability",
+   "n_sessions_scored": 0,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "availability",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "ridgeway:notify_me"
+  },
+  "gitea:GT29": {
+   "site": "gitea",
+   "family": "gitea:edit_user_contact",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 2,
+   "notes": "full name is an account attribute but not authentication-affecting; chose standard",
+   "goal": "identity",
+   "goal5": "identity",
+   "goal5_sequence": [
+    "identity"
+   ],
+   "family_v2": "gitea:edit_user_contact"
+  },
+  "ridgeway:D": {
+   "site": "ridgeway",
+   "family": "ridgeway:find_then_add_to_cart",
+   "verification": "state",
+   "old_objective": "discovery",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "ridgeway:find_then_add_to_cart"
+  },
+  "gitea:GT01": {
+   "site": "gitea",
+   "family": "gitea:find_by_text_or_label",
+   "verification": "self_report",
+   "old_objective": "discovery",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": "report the identifier of the record that matches the criteria",
+   "goal": "discovery",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "gitea:find_by_text_or_label"
+  },
+  "gitea:GT15": {
+   "site": "gitea",
+   "family": "gitea:count_records",
+   "verification": "self_report",
+   "old_objective": "enumeration",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "enumeration",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "gitea:count_records"
+  },
+  "gitea:GT08": {
+   "site": "gitea",
+   "family": "gitea:read_user_contact",
+   "verification": "self_report",
+   "old_objective": "retrieval",
+   "n_sessions_scored": 1,
+   "tier": "elevated",
+   "confidence": 2,
+   "notes": "personal data (email/phone) read; chose elevated",
+   "goal": "retrieval",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "gitea:read_user_contact"
+  },
+  "ridgeway:E": {
+   "site": "ridgeway",
+   "family": "ridgeway:notify_me",
+   "verification": "state",
+   "old_objective": "availability",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "availability",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "ridgeway:notify_me"
+  },
+  "gitea:GT35": {
+   "site": "gitea",
+   "family": "gitea:publish_release",
+   "verification": "state",
+   "old_objective": "transaction",
+   "n_sessions_scored": 1,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "transaction",
+   "goal5": "transaction",
+   "goal5_sequence": [
+    "transaction"
+   ],
+   "family_v2": "gitea:publish_release"
+  },
+  "servicenow:SN21": {
+   "site": "servicenow",
+   "family": "servicenow:order_catalog_item",
+   "verification": "state",
+   "old_objective": "transaction",
+   "n_sessions_scored": 2,
+   "tier": "critical",
+   "confidence": 2,
+   "notes": "catalog order; could be service (request for others to act on). chose transaction since it commits an order",
+   "goal": "transaction",
+   "goal5": "transaction",
+   "goal5_sequence": [
+    "transaction"
+   ],
+   "family_v2": "servicenow:order_catalog_item"
+  },
+  "servicenow:SN02": {
+   "site": "servicenow",
+   "family": "servicenow:find_by_description",
+   "verification": "self_report",
+   "old_objective": "discovery",
+   "n_sessions_scored": 3,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": "report the identifier of the record that matches the criteria",
+   "goal": "discovery",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "servicenow:find_by_description"
+  },
+  "servicenow:SN30": {
+   "site": "servicenow",
+   "family": "servicenow:deactivate_user",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 2,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "identity",
+   "goal5": "identity",
+   "goal5_sequence": [
+    "identity"
+   ],
+   "family_v2": "servicenow:deactivate_user"
+  },
+  "ridgeway:C096": {
+   "site": "ridgeway",
+   "family": "composite:create/identity->modify/identity",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 2,
+   "tier": "critical",
+   "confidence": 2,
+   "notes": "register then change phone; both identity, so one goal listed",
+   "goal": "identity",
+   "goal5": "identity",
+   "goal5_sequence": [
+    "identity"
+   ],
+   "family_v2": "composite:create/identity->modify/identity"
+  },
+  "ridgeway:C021": {
+   "site": "ridgeway",
+   "family": "ridgeway:checkout",
+   "verification": "state",
+   "old_objective": "transaction",
+   "n_sessions_scored": 2,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": "checkout; cart steps are part of placing the order",
+   "goal": "transaction",
+   "goal5": "transaction",
+   "goal5_sequence": [
+    "transaction"
+   ],
+   "family_v2": "ridgeway:checkout"
+  },
+  "servicenow:SN14": {
+   "site": "servicenow",
+   "family": "servicenow:sort_and_read_top",
+   "verification": "self_report",
+   "old_objective": "enumeration",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 2,
+   "notes": "sorted list, report first row: ordering over a set",
+   "goal": "enumeration",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "servicenow:sort_and_read_top"
+  },
+  "gitea:GT38": {
+   "site": "gitea",
+   "family": "gitea:watch_repository",
+   "verification": "state",
+   "old_objective": "availability",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "availability",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "gitea:watch_repository"
+  },
+  "gitea:GT09": {
+   "site": "gitea",
+   "family": "gitea:read_field_value",
+   "verification": "self_report",
+   "old_objective": "retrieval",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "retrieval",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "gitea:read_field_value"
+  },
+  "gitea:GT22": {
+   "site": "gitea",
+   "family": "gitea:open_issue",
+   "verification": "state",
+   "old_objective": "service",
+   "n_sessions_scored": 1,
+   "tier": "elevated",
+   "confidence": 3,
+   "notes": null,
+   "goal": "service",
+   "goal5": "create",
+   "goal5_sequence": [
+    "create"
+   ],
+   "family_v2": "gitea:open_issue_basic"
+  },
+  "servicenow:SN17": {
+   "site": "servicenow",
+   "family": "servicenow:edit_record_field",
+   "verification": "state",
+   "old_objective": "curation",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "servicenow:edit_incident"
+  },
+  "gitea:GT43": {
+   "site": "gitea",
+   "family": "composite:enumeration->service",
+   "verification": "state",
+   "old_objective": "enumeration",
+   "n_sessions_scored": 1,
+   "tier": "elevated",
+   "confidence": 3,
+   "notes": "count then file a record containing it",
+   "goal": null,
+   "goal_sequence": [
+    "enumeration",
+    "service"
+   ],
+   "segment_tiers": null,
+   "goal5": null,
+   "goal5_sequence": [
+    "read",
+    "create"
+   ],
+   "family_v2": "composite:enumeration->service"
+  },
+  "ridgeway:N02": {
+   "site": "ridgeway",
+   "family": "ridgeway:catalog_count",
+   "verification": "self_report",
+   "old_objective": "enumeration",
+   "n_sessions_scored": 0,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "enumeration",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "ridgeway:catalog_count"
+  },
+  "gitea:GT34": {
+   "site": "gitea",
+   "family": "gitea:delete_repository",
+   "verification": "state",
+   "old_objective": "transaction",
+   "n_sessions_scored": 1,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "transaction",
+   "goal5": "transaction",
+   "goal5_sequence": [
+    "transaction"
+   ],
+   "family_v2": "gitea:delete_repository"
+  },
+  "ridgeway:C095": {
+   "site": "ridgeway",
+   "family": "composite:identity->transaction->service",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 0,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": null,
+   "goal_sequence": [
+    "identity",
+    "transaction",
+    "service"
+   ],
+   "segment_tiers": null,
+   "goal5": null,
+   "goal5_sequence": [
+    "identity",
+    "transaction",
+    "create"
+   ],
+   "family_v2": "composite:identity->transaction->service"
+  },
+  "servicenow:SN09": {
+   "site": "servicenow",
+   "family": "servicenow:read_field_value",
+   "verification": "self_report",
+   "old_objective": "retrieval",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "retrieval",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "servicenow:read_field_value"
+  },
+  "gitea:GT16": {
+   "site": "gitea",
+   "family": "gitea:edit_record_field",
+   "verification": "state",
+   "old_objective": "curation",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "gitea:edit_record_field"
+  },
+  "gitea:GT10": {
+   "site": "gitea",
+   "family": "gitea:read_field_value",
+   "verification": "self_report",
+   "old_objective": "retrieval",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "retrieval",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "gitea:read_field_value"
+  },
+  "gitea:GT39": {
+   "site": "gitea",
+   "family": "gitea:subscribe_thread",
+   "verification": "state",
+   "old_objective": "availability",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "availability",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "gitea:subscribe_thread"
+  },
+  "ridgeway:C075": {
+   "site": "ridgeway",
+   "family": "ridgeway:find_then_add_to_cart",
+   "verification": "state",
+   "old_objective": "discovery",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "ridgeway:find_then_add_to_cart"
+  },
+  "gitea:GT04": {
+   "site": "gitea",
+   "family": "gitea:find_by_text_or_label",
+   "verification": "self_report",
+   "old_objective": "discovery",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": "report the identifier of the record that matches the criteria",
+   "goal": "discovery",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "gitea:find_by_text_or_label"
+  },
+  "gitea:GT23": {
+   "site": "gitea",
+   "family": "gitea:comment",
+   "verification": "state",
+   "old_objective": "service",
+   "n_sessions_scored": 1,
+   "tier": "elevated",
+   "confidence": 3,
+   "notes": "comment",
+   "goal": "service",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "gitea:edit_record_field"
+  },
+  "gitea:GT12": {
+   "site": "gitea",
+   "family": "gitea:count_records",
+   "verification": "self_report",
+   "old_objective": "enumeration",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "enumeration",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "gitea:count_records"
+  },
+  "servicenow:SN28": {
+   "site": "servicenow",
+   "family": "servicenow:edit_user_contact",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 2,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "identity",
+   "goal5": "identity",
+   "goal5_sequence": [
+    "identity"
+   ],
+   "family_v2": "servicenow:edit_user_contact"
+  },
+  "servicenow:SN16": {
+   "site": "servicenow",
+   "family": "servicenow:edit_record_field",
+   "verification": "state",
+   "old_objective": "curation",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "servicenow:edit_incident"
+  },
+  "gitea:GT30": {
+   "site": "gitea",
+   "family": "gitea:deactivate_user",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 1,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "identity",
+   "goal5": "identity",
+   "goal5_sequence": [
+    "identity"
+   ],
+   "family_v2": "gitea:deactivate_user"
+  },
+  "ridgeway:C023": {
+   "site": "ridgeway",
+   "family": "ridgeway:directory_lookup",
+   "verification": "self_report",
+   "old_objective": "retrieval",
+   "n_sessions_scored": 0,
+   "tier": "elevated",
+   "confidence": 2,
+   "notes": "staff phone number is personal data; find step is only a means; chose elevated",
+   "goal": "retrieval",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "ridgeway:directory_lookup"
+  },
+  "ridgeway:C080": {
+   "site": "ridgeway",
+   "family": "ridgeway:board_lookup",
+   "verification": "self_report",
+   "old_objective": "retrieval",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 2,
+   "notes": "locate the load by origin/destination; id and time reported; could be retrieval",
+   "goal": "discovery",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "ridgeway:board_lookup"
+  },
+  "ridgeway:C081": {
+   "site": "ridgeway",
+   "family": "ridgeway:support_ticket",
+   "verification": "state",
+   "old_objective": "service",
+   "n_sessions_scored": 2,
+   "tier": "elevated",
+   "confidence": 3,
+   "notes": null,
+   "goal": "service",
+   "goal5": "create",
+   "goal5_sequence": [
+    "create"
+   ],
+   "family_v2": "ridgeway:support_ticket"
+  },
+  "gitea:GT32": {
+   "site": "gitea",
+   "family": "gitea:merge_pull_request",
+   "verification": "state",
+   "old_objective": "transaction",
+   "n_sessions_scored": 1,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "transaction",
+   "goal5": "transaction",
+   "goal5_sequence": [
+    "transaction"
+   ],
+   "family_v2": "gitea:merge_pull_request"
+  },
+  "servicenow:SN37": {
+   "site": "servicenow",
+   "family": "composite:identity->service",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 1,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": null,
+   "goal_sequence": [
+    "identity",
+    "service"
+   ],
+   "segment_tiers": null,
+   "goal5": null,
+   "goal5_sequence": [
+    "identity",
+    "create"
+   ],
+   "family_v2": "composite:identity->service"
+  },
+  "servicenow:SN15": {
+   "site": "servicenow",
+   "family": "servicenow:count_users",
+   "verification": "self_report",
+   "old_objective": "enumeration",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "enumeration",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "servicenow:count_users"
+  },
+  "gitea:GT20": {
+   "site": "gitea",
+   "family": "gitea:edit_record_field",
+   "verification": "state",
+   "old_objective": "curation",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "gitea:edit_record_field"
+  },
+  "servicenow:SN31": {
+   "site": "servicenow",
+   "family": "servicenow:raise_incident",
+   "verification": "state",
+   "old_objective": "service",
+   "n_sessions_scored": 2,
+   "tier": "elevated",
+   "confidence": 3,
+   "notes": null,
+   "goal": "service",
+   "goal5": "create",
+   "goal5_sequence": [
+    "create"
+   ],
+   "family_v2": "servicenow:create_incident_a"
+  },
+  "servicenow:SN34": {
+   "site": "servicenow",
+   "family": "servicenow:open_problem",
+   "verification": "state",
+   "old_objective": "service",
+   "n_sessions_scored": 2,
+   "tier": "elevated",
+   "confidence": 3,
+   "notes": null,
+   "goal": "service",
+   "goal5": "create",
+   "goal5_sequence": [
+    "create"
+   ],
+   "family_v2": "servicenow:create_problem_change"
+  },
+  "ridgeway:C016": {
+   "site": "ridgeway",
+   "family": "ridgeway:support_ticket",
+   "verification": "state",
+   "old_objective": "service",
+   "n_sessions_scored": 2,
+   "tier": "elevated",
+   "confidence": 3,
+   "notes": null,
+   "goal": "service",
+   "goal5": "create",
+   "goal5_sequence": [
+    "create"
+   ],
+   "family_v2": "ridgeway:support_ticket"
+  },
+  "servicenow:SN01": {
+   "site": "servicenow",
+   "family": "servicenow:find_by_description",
+   "verification": "self_report",
+   "old_objective": "discovery",
+   "n_sessions_scored": 3,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": "report the identifier of the record that matches the criteria",
+   "goal": "discovery",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "servicenow:find_by_description"
+  },
+  "ridgeway:C": {
+   "site": "ridgeway",
+   "family": "ridgeway:board_lookup",
+   "verification": "self_report",
+   "old_objective": "retrieval",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "retrieval",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "ridgeway:board_lookup"
+  },
+  "ridgeway:C078": {
+   "site": "ridgeway",
+   "family": "ridgeway:board_count",
+   "verification": "self_report",
+   "old_objective": "enumeration",
+   "n_sessions_scored": 0,
+   "tier": "standard",
+   "confidence": 2,
+   "notes": "count of pages over the board = a count over a set",
+   "goal": "enumeration",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "ridgeway:board_count"
+  },
+  "gitea:GT41": {
+   "site": "gitea",
+   "family": "composite:discovery->curation",
+   "verification": "state",
+   "old_objective": "discovery",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 2,
+   "notes": "find issue then label and close; both are changes to one record",
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "composite:discovery->curation"
+  },
+  "gitea:GT14": {
+   "site": "gitea",
+   "family": "gitea:sort_and_read_top",
+   "verification": "self_report",
+   "old_objective": "enumeration",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 2,
+   "notes": "sorted list, report first row: ordering over a set",
+   "goal": "enumeration",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "gitea:sort_and_read_top"
+  },
+  "ridgeway:C079": {
+   "site": "ridgeway",
+   "family": "ridgeway:directory_lookup",
+   "verification": "self_report",
+   "old_objective": "retrieval",
+   "n_sessions_scored": 0,
+   "tier": "elevated",
+   "confidence": 2,
+   "notes": "staff phone number is personal data; find step is only a means; chose elevated",
+   "goal": "retrieval",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "ridgeway:directory_lookup"
+  },
+  "servicenow:SN13": {
+   "site": "servicenow",
+   "family": "servicenow:count_records",
+   "verification": "self_report",
+   "old_objective": "enumeration",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "enumeration",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "servicenow:count_records"
+  },
+  "ridgeway:C082": {
+   "site": "ridgeway",
+   "family": "composite:identity->service",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 0,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": null,
+   "goal_sequence": [
+    "identity",
+    "service"
+   ],
+   "segment_tiers": null,
+   "goal5": null,
+   "goal5_sequence": [
+    "identity",
+    "create"
+   ],
+   "family_v2": "composite:identity->service"
+  },
+  "gitea:GT03": {
+   "site": "gitea",
+   "family": "gitea:find_user_by_attribute",
+   "verification": "self_report",
+   "old_objective": "discovery",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": "report the identifier of the record that matches the criteria",
+   "goal": "discovery",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "gitea:find_user_by_attribute"
+  },
+  "servicenow:SN27": {
+   "site": "servicenow",
+   "family": "servicenow:create_user",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 2,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "identity",
+   "goal5": "identity",
+   "goal5_sequence": [
+    "identity"
+   ],
+   "family_v2": "servicenow:create_user"
+  },
+  "servicenow:SN35": {
+   "site": "servicenow",
+   "family": "servicenow:open_change",
+   "verification": "state",
+   "old_objective": "service",
+   "n_sessions_scored": 1,
+   "tier": "elevated",
+   "confidence": 3,
+   "notes": null,
+   "goal": "service",
+   "goal5": "create",
+   "goal5_sequence": [
+    "create"
+   ],
+   "family_v2": "servicenow:create_problem_change"
+  },
+  "ridgeway:C071": {
+   "site": "ridgeway",
+   "family": "ridgeway:wishlist",
+   "verification": "state",
+   "old_objective": "curation",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": "add then remove from working set",
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "ridgeway:wishlist"
+  },
+  "gitea:GT27": {
+   "site": "gitea",
+   "family": "gitea:create_user",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 1,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "identity",
+   "goal5": "identity",
+   "goal5_sequence": [
+    "identity"
+   ],
+   "family_v2": "gitea:create_user"
+  },
+  "gitea:GT26": {
+   "site": "gitea",
+   "family": "gitea:create_user",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 1,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "identity",
+   "goal5": "identity",
+   "goal5_sequence": [
+    "identity"
+   ],
+   "family_v2": "gitea:create_user"
+  },
+  "gitea:GT37": {
+   "site": "gitea",
+   "family": "gitea:watch_repository",
+   "verification": "state",
+   "old_objective": "availability",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "availability",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "gitea:watch_repository"
+  },
+  "ridgeway:N06": {
+   "site": "ridgeway",
+   "family": "ridgeway:checkout",
+   "verification": "state",
+   "old_objective": "transaction",
+   "n_sessions_scored": 0,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": "checkout; cart steps are part of placing the order",
+   "goal": "transaction",
+   "goal5": "transaction",
+   "goal5_sequence": [
+    "transaction"
+   ],
+   "family_v2": "ridgeway:checkout"
+  },
+  "ridgeway:C047": {
+   "site": "ridgeway",
+   "family": "ridgeway:notify_me",
+   "verification": "state",
+   "old_objective": "availability",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 2,
+   "notes": "conditional: notify if out of stock, else add to cart; terminal goal depends on branch",
+   "goal": "availability",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "ridgeway:notify_me"
+  },
+  "gitea:GT40": {
+   "site": "gitea",
+   "family": "gitea:subscribe_thread",
+   "verification": "state",
+   "old_objective": "availability",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "availability",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "gitea:subscribe_thread"
+  },
+  "servicenow:SN08": {
+   "site": "servicenow",
+   "family": "servicenow:read_field_value",
+   "verification": "self_report",
+   "old_objective": "retrieval",
+   "n_sessions_scored": 3,
+   "tier": "elevated",
+   "confidence": 2,
+   "notes": "locker/access code is a secret-like value; chose elevated",
+   "goal": "retrieval",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "servicenow:read_field_value"
+  },
+  "ridgeway:N05": {
+   "site": "ridgeway",
+   "family": "ridgeway:checkout",
+   "verification": "state",
+   "old_objective": "transaction",
+   "n_sessions_scored": 0,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": "checkout; cart steps are part of placing the order",
+   "goal": "transaction",
+   "goal5": "transaction",
+   "goal5_sequence": [
+    "transaction"
+   ],
+   "family_v2": "ridgeway:checkout"
+  },
+  "ridgeway:C069": {
+   "site": "ridgeway",
+   "family": "ridgeway:wishlist",
+   "verification": "state",
+   "old_objective": "curation",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "ridgeway:wishlist"
+  },
+  "gitea:GT05": {
+   "site": "gitea",
+   "family": "gitea:find_by_text_or_label",
+   "verification": "self_report",
+   "old_objective": "discovery",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": "report the identifier of the record that matches the criteria",
+   "goal": "discovery",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "gitea:find_by_text_or_label"
+  },
+  "servicenow:SN25": {
+   "site": "servicenow",
+   "family": "servicenow:order_catalog_item",
+   "verification": "state",
+   "old_objective": "transaction",
+   "n_sessions_scored": 2,
+   "tier": "critical",
+   "confidence": 2,
+   "notes": "catalog order; could be service (request for others to act on). chose transaction since it commits an order",
+   "goal": "transaction",
+   "goal5": "transaction",
+   "goal5_sequence": [
+    "transaction"
+   ],
+   "family_v2": "servicenow:order_catalog_item"
+  },
+  "gitea:GT17": {
+   "site": "gitea",
+   "family": "gitea:edit_record_field",
+   "verification": "state",
+   "old_objective": "curation",
+   "n_sessions_scored": 1,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "gitea:edit_record_field"
+  },
+  "gitea:GT24": {
+   "site": "gitea",
+   "family": "gitea:open_issue",
+   "verification": "state",
+   "old_objective": "service",
+   "n_sessions_scored": 1,
+   "tier": "elevated",
+   "confidence": 3,
+   "notes": null,
+   "goal": "service",
+   "goal5": "create",
+   "goal5_sequence": [
+    "create"
+   ],
+   "family_v2": "gitea:open_issue_assigned"
+  },
+  "servicenow:SN29": {
+   "site": "servicenow",
+   "family": "servicenow:edit_user_contact",
+   "verification": "state",
+   "old_objective": "identity",
+   "n_sessions_scored": 2,
+   "tier": "critical",
+   "confidence": 3,
+   "notes": null,
+   "goal": "identity",
+   "goal5": "identity",
+   "goal5_sequence": [
+    "identity"
+   ],
+   "family_v2": "servicenow:edit_user_contact"
+  },
+  "ridgeway:C045": {
+   "site": "ridgeway",
+   "family": "ridgeway:add_to_cart_variants",
+   "verification": "state",
+   "old_objective": "curation",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "ridgeway:add_to_cart_variants"
+  },
+  "ridgeway:A": {
+   "site": "ridgeway",
+   "family": "ridgeway:find_then_add_to_cart",
+   "verification": "state",
+   "old_objective": "discovery",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "ridgeway:find_then_add_to_cart"
+  },
+  "ridgeway:C055": {
+   "site": "ridgeway",
+   "family": "ridgeway:add_to_cart_variants",
+   "verification": "state",
+   "old_objective": "curation",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "ridgeway:add_to_cart_variants"
+  },
+  "gitea:GT21": {
+   "site": "gitea",
+   "family": "gitea:open_issue",
+   "verification": "state",
+   "old_objective": "service",
+   "n_sessions_scored": 1,
+   "tier": "elevated",
+   "confidence": 3,
+   "notes": null,
+   "goal": "service",
+   "goal5": "create",
+   "goal5_sequence": [
+    "create"
+   ],
+   "family_v2": "gitea:open_issue_basic"
+  },
+  "ridgeway:C002": {
+   "site": "ridgeway",
+   "family": "ridgeway:find_then_add_to_cart",
+   "verification": "state",
+   "old_objective": "discovery",
+   "n_sessions_scored": 2,
+   "tier": "standard",
+   "confidence": 3,
+   "notes": null,
+   "goal": "curation",
+   "goal5": "modify",
+   "goal5_sequence": [
+    "modify"
+   ],
+   "family_v2": "ridgeway:find_then_add_to_cart"
+  },
+  "servicenow:SN10": {
+   "site": "servicenow",
+   "family": "servicenow:read_user_contact",
+   "verification": "self_report",
+   "old_objective": "retrieval",
+   "n_sessions_scored": 2,
+   "tier": "elevated",
+   "confidence": 2,
+   "notes": "personal data (email/phone) read; chose elevated",
+   "goal": "retrieval",
+   "goal5": "read",
+   "goal5_sequence": [
+    "read"
+   ],
+   "family_v2": "servicenow:read_user_contact"
+  }
+ },
+ "goals5": {
+  "read": {
+   "level1": "informational",
+   "definition": "Locate, inspect, or aggregate existing application records without mutating state."
+  },
+  "modify": {
+   "level1": "transactional",
+   "definition": "Mutate attributes, workflow state, or user-scoped flags (cart, wishlist, watch/subscribe, thread comment) on an existing record."
+  },
+  "create": {
+   "level1": "transactional",
+   "definition": "Instantiate a new business or operational record (issue, pull request, support ticket, incident, problem, or change request)."
+  },
+  "identity": {
+   "level1": "transactional",
+   "definition": "Create, update, or disable a user account, its contact/credential attributes, or its login permission."
+  },
+  "transaction": {
+   "level1": "transactional",
+   "definition": "Execute a consequential, costly-to-reverse commitment: place an order, merge a pull request, publish a release, or delete a repository."
+  }
+ }
+}

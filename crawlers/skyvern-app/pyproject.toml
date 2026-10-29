@@ -1,0 +1,10 @@
+[project]
+name = "skyvern-app"
+version = "0.1.0"
+description = "Skyvern local pipeline for captcha and environment experiments"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+dependencies = [
+    "skyvern",
+    "python-dotenv>=1.0.0",
+]
